@@ -10,36 +10,23 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_LS_H
-# define FT_LS_H
-
+#include <ft_printf.h> //ft_printf()
 #include <sys/stat.h> // struct stat
 #include <sys/types.h> //struct dirent
 #include <libft.h> //t_list
+#include <ft_ls.h> // parse_args()
+#include <dirent.h> // opendir(), readdir()
 
-extern int	g_flags;
 
-# define FLAGS_INDEX	"vlRart"
-
-# define FLAG_VERBOSE	0x1
-# define FLAG_LONG		0x2
-# define FLAG_RECURSIVE	0x4
-# define FLAG_ALL		0x8
-# define FLAG_REVERSE	0X10
-# define FLAG_MODTIME	0x20
-
-struct      s_entry
+int		print_directory(t_list *dir_lst)
 {
-	struct dirent	*dirent;
-	struct stat		*status;
-//	unsigned short	reclen;
-//	unsigned char	type;
-//	char			name[256];
-	char			*path;
-};
+	struct s_entry	*entry;
 
-_Bool		parse_args(int argc, char **argv, char **path);
-t_list		*get_dir_info(char *path);
-int			print_directory(t_list *dir_lst);
-
-#endif
+	while (dir_lst)
+	{
+		entry = dir_lst->content;
+		ft_printf("%15s %15hu %15s\n", entry->dirent->d_name, entry->dirent->d_reclen, entry->path);
+		dir_lst = dir_lst->next;
+	}
+	return (0);
+}

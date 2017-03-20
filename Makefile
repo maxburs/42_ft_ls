@@ -18,7 +18,9 @@ LIBFTPRINTF_DIR = ./src/ft_printf
 SRC = \
 	$(addprefix ./src/, \
 		ft_ls.c \
+		get_dir_info.c \
 		parse_args.c \
+		print_directory.c \
 	)
 
 OBJ = $(SRC:.c=.o)
