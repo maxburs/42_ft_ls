@@ -17,6 +17,9 @@
 
 int		g_flags;
 
+//TODO: look into handling symoblic links with lstat()
+//TODO: listxattr() get extented attributes, what do i need them for?
+
 int				ls_path(char *path)
 {
 	t_list	*dir_lst;

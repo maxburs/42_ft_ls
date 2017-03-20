@@ -16,7 +16,7 @@
 #include <stdio.h> // perror
 
 #include <libft.h> // t_list, lstadd(), lstnew()
-#include <sys/types.h> //struct dirent
+#include <sys/types.h> //struct dirent, struct passwd, struct group
 #include <dirent.h> // opendir(), readdir()
 #include <stdlib.h> // malloc()
 
@@ -24,6 +24,9 @@
 #include <unistd.h> // stat()
 
 #include <stdbool.h> // true, false
+
+#include <pwd.h> // getpwuid()
+#include <grp.h> // getgrgid()
 
 #include <errno.h>
 
@@ -49,15 +52,14 @@ static char			*directory_append(char *dir_path, char *name)
 static struct s_entry	*build_entry(struct dirent *entry_raw, char *dir_path)
 {
 	struct s_entry	*entry;
-	struct stat		*status;
 
-	if (!(entry = (struct s_entry*)malloc(sizeof(struct s_entry))))
+	if (NULL == (entry = (struct s_entry*)malloc(sizeof(struct s_entry))))
 	{
 		perror("malloc error in build_entry");
 		ft_memdel((void**)&entry);
 		return (NULL);
 	}
-	if (!(entry->dirent = ft_memdup(entry_raw, sizeof(struct dirent))))
+	if (NULL == (entry->dirent = ft_memdup(entry_raw, sizeof(struct dirent))))
 	{
 		perror("memdup() failure in build_entry()");
 		ft_memdel((void**)&entry);
@@ -65,16 +67,25 @@ static struct s_entry	*build_entry(struct dirent *entry_raw, char *dir_path)
 	}
 
 	entry->path = directory_append(dir_path, entry_raw->d_name);;
-	if ((g_flags & FLAG_LONG) == false)
+	if (false == (g_flags & FLAG_LONG))
 		return (entry);
-	if (!(status = malloc(sizeof(struct stat))))
+	if (NULL == (entry->status = malloc(sizeof(struct stat))))
 		return (NULL);
-	if (stat(entry->path, status) == -1)
+	if (-1 == stat(entry->path, entry->status))
 	{
 		perror("error on stat() call in build_entry()");
 		return (NULL);
 	}
-	entry->status = status;
+	if (NULL == (entry->passwd = getpwuid(entry->status->st_uid)))
+	{
+		perror("error on getpwid() in build_entry");
+		return (NULL);
+	}
+	if (NULL == (entry->group = getgrgid(entry->status->st_uid)))
+	{
+		perror("error on getpwid() in build_entry");
+		return (NULL);
+	}
 	return (entry);
 }
 

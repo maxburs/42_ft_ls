@@ -12,7 +12,7 @@
 
 #include <ft_printf.h> //ft_printf()
 #include <sys/stat.h> // struct stat
-#include <sys/types.h> //struct dirent
+#include <sys/types.h> //struct dirent, struct passwd, struct group
 #include <libft.h> //t_list
 #include <ft_ls.h> // parse_args()
 #include <dirent.h> // opendir(), readdir()

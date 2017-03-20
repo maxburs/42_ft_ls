@@ -14,7 +14,7 @@
 # define FT_LS_H
 
 #include <sys/stat.h> // struct stat
-#include <sys/types.h> //struct dirent
+#include <sys/types.h> //struct dirent, struct passwd, struct group
 #include <libft.h> //t_list
 
 extern int	g_flags;
@@ -32,9 +32,8 @@ struct      s_entry
 {
 	struct dirent	*dirent;
 	struct stat		*status;
-//	unsigned short	reclen;
-//	unsigned char	type;
-//	char			name[256];
+	struct passwd	*passwd;
+	struct group	*group;
 	char			*path;
 };
 
