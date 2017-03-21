@@ -27,6 +27,7 @@
 
 #include <pwd.h> // getpwuid()
 #include <grp.h> // getgrgid()
+#include <uuid/uuid.h> // getgrgid()
 
 #include <errno.h>
 
@@ -49,6 +50,50 @@ static char			*directory_append(char *dir_path, char *name)
 	return (path);
 }
 
+static int				get_passwd(struct s_entry *entry)
+{
+	struct passwd		*passwd;
+
+	errno = 0;
+	if (NULL == (passwd = getpwuid(entry->status->st_uid)))
+	{
+		if (errno)
+			perror("error on getpwid() in get_passwd");
+		else
+			ft_printf("getwid() in get_passwd: uid not found\n");
+		return (-1);
+	}
+	if (NULL == (entry->passwd = ft_memdup(passwd, sizeof(struct passwd))))
+	{
+		perror("malloc error in get_passwd");
+		return (-1);
+	}
+	return (0);
+}
+
+static int				get_group(struct s_entry *entry)
+{
+	struct group		*group;
+
+	errno = 0;
+	if (NULL == (group = getgrgid(entry->status->st_gid)))
+	{
+		if (errno)
+			perror("error on getgrgid() in get_group");
+		else
+			ft_printf("getgrgid() in get_group: uid not found\n");
+		return (-1);
+	}
+	if (NULL == (entry->group = ft_memdup(group, sizeof(struct group))))
+	{
+		perror("malloc error in get_group");
+		return (-1);
+	}
+	return (0);
+}
+
+//TODO: free entry when an error occurs
+
 static struct s_entry	*build_entry(struct dirent *entry_raw, char *dir_path)
 {
 	struct s_entry	*entry;
@@ -59,6 +104,7 @@ static struct s_entry	*build_entry(struct dirent *entry_raw, char *dir_path)
 		ft_memdel((void**)&entry);
 		return (NULL);
 	}
+	ft_bzero(entry, sizeof(struct s_entry));
 	if (NULL == (entry->dirent = ft_memdup(entry_raw, sizeof(struct dirent))))
 	{
 		perror("memdup() failure in build_entry()");
@@ -74,18 +120,10 @@ static struct s_entry	*build_entry(struct dirent *entry_raw, char *dir_path)
 		perror("error on stat() call in build_entry()");
 		return (NULL);
 	}
-	print_permissions(entry->status->st_mode);
-	if (NULL == (entry->passwd = getpwuid(entry->status->st_uid)))
-	{
-		perror("error on getpwid() in build_entry");
+	if (get_passwd(entry))
 		return (NULL);
-	}
-	if (NULL == (entry->group = getgrgid(entry->status->st_uid)))
-	{
-		perror("error on getpwid() in build_entry");
+	if (get_group(entry))
 		return (NULL);
-	}
-	ft_putchar('\n');
 	return (entry);
 }
 
@@ -94,6 +132,7 @@ t_list	*get_dir_info(char *path)
 	DIR				*dirp;
 	struct dirent	*dir_cur;
 	t_list			*dir_lst;
+	struct s_entry	*entry;
 
 	dir_lst = NULL;
 	if ((dirp = opendir(path)) == NULL)
@@ -109,7 +148,9 @@ t_list	*get_dir_info(char *path)
 			lstdel(&dir_lst, &free);
 			return (NULL);
 		}
-		lstadd(&dir_lst, lstnew(build_entry(dir_cur, path)));
+		if (NULL == (entry = build_entry(dir_cur, path)))
+			return (NULL);
+		lstadd(&dir_lst, lstnew(entry));
 	}
 	closedir(dirp);
 	return (dir_lst);
