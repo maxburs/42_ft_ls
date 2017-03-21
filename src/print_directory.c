@@ -82,6 +82,7 @@ static int		print_long(t_list *dir_lst)
 	return (0);
 }
 
+//TODO: print in columns
 static int		print_short(t_list *dir_lst)
 {
 	struct s_entry	*entry;
@@ -117,8 +118,10 @@ int				recurse_directories(t_list *dir_lst)
 			continue ;
 		}
 		if (entry->status->st_mode & S_IFDIR)
-			ft_printf("recurse on path: %s\n",
-				entry->path);
+		{
+			ft_printf("\n%s:\n", entry->path);
+			ls_path(entry->path);
+		}
 		dir_lst = dir_lst->next;
 	}
 	return (0);

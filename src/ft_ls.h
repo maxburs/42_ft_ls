@@ -19,7 +19,7 @@
 
 extern int	g_flags;
 
-# define FLAGS_INDEX	"vlRart"
+# define FLAGS_INDEX	"vlRartf"
 
 # define FLAG_VERBOSE	0x1
 # define FLAG_LONG		0x2
@@ -27,6 +27,7 @@ extern int	g_flags;
 # define FLAG_ALL		0x8
 # define FLAG_REVERSE	0X10
 # define FLAG_MODTIME	0x20
+# define FLAG_NOSORT	0x40
 
 struct      s_entry
 {
@@ -40,5 +41,7 @@ struct      s_entry
 _Bool		parse_args(int argc, char **argv, char **path);
 t_list		*get_dir_info(char *path);
 int			print_directory(t_list *dir_lst);
+int			ls_path(char *path);
+int			dir_lst_sort(t_list **dir_lst);
 
 #endif

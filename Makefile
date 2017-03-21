@@ -17,6 +17,7 @@ LIBFTPRINTF_DIR = ./src/ft_printf
 
 SRC = \
 	$(addprefix ./src/, \
+		dir_lst_sort.c \
 		ft_ls.c \
 		get_dir_info.c \
 		parse_args.c \

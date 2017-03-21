@@ -26,7 +26,11 @@ int				ls_path(char *path)
 
 	if (!(dir_lst = get_dir_info(path)))
 		return (1);
-	print_directory(dir_lst);
+	
+	if (dir_lst_sort(&dir_lst))
+		return (1);
+	if (print_directory(dir_lst))
+		return (1);
 	//TODO: free dir_lst
 	return (0);
 }
@@ -37,8 +41,11 @@ int				main(int argc, char **argv)
 
 	g_flags = 0;
 	path = NULL;
-	if (parse_args(argc, argv, &path)
-		|| (ls_path(path)))
+	if (parse_args(argc, argv, &path))
+		return (0);
+	if (g_flags & FLAG_NOSORT)
+		g_flags = g_flags | FLAG_ALL;
+	if ((ls_path(path)))
 	{
 		ft_strdel(&path);
 		return (0);
