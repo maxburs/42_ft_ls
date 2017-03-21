@@ -50,7 +50,7 @@ static char		*get_time(struct s_entry *entry)
 	return (formatted_time);
 }
 
-int				print_directory(t_list *dir_lst)
+static int		print_long(t_list *dir_lst)
 {
 	struct s_entry	*entry;
 	char			*f_time;
@@ -80,4 +80,32 @@ int				print_directory(t_list *dir_lst)
 		dir_lst = dir_lst->next;
 	}
 	return (0);
+}
+
+static int		print_short(t_list *dir_lst)
+{
+	struct s_entry	*entry;
+
+	while (dir_lst)
+	{
+		entry = dir_lst->content;
+		if (entry->dirent->d_name[0] == '.' && !(g_flags & FLAG_ALL))
+		{
+			dir_lst = dir_lst->next;
+			continue ;
+		}
+		ft_printf("%-16s",
+			entry->dirent->d_name);
+		dir_lst = dir_lst->next;
+	}
+	ft_putchar('\n');
+	return (0);
+}
+
+int				print_directory(t_list *dir_lst)
+{
+	if (g_flags & FLAG_LONG)
+		return (print_long(dir_lst));
+	else
+		return (print_short(dir_lst));
 }

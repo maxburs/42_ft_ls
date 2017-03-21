@@ -55,10 +55,7 @@ _Bool			parse_args(int argc, char **argv, char **path)
 			*path = ft_strdup(argv[argc]);
 	}
 	if (*path == NULL)
-	{
-		ft_printf("\033[31merror: no path found\n\033[0m");
-		return (1);
-	}
+		*path = ft_strdup(".");
 	if (g_flags & FLAG_VERBOSE)
 		parse_arg_result_print(*path);
 	return (0);
