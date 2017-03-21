@@ -67,8 +67,6 @@ static struct s_entry	*build_entry(struct dirent *entry_raw, char *dir_path)
 	}
 
 	entry->path = directory_append(dir_path, entry_raw->d_name);;
-	if (false == (g_flags & FLAG_LONG))
-		return (entry);
 	if (NULL == (entry->status = malloc(sizeof(struct stat))))
 		return (NULL);
 	if (-1 == stat(entry->path, entry->status))
@@ -76,6 +74,7 @@ static struct s_entry	*build_entry(struct dirent *entry_raw, char *dir_path)
 		perror("error on stat() call in build_entry()");
 		return (NULL);
 	}
+	print_permissions(entry->status->st_mode);
 	if (NULL == (entry->passwd = getpwuid(entry->status->st_uid)))
 	{
 		perror("error on getpwid() in build_entry");
@@ -86,6 +85,7 @@ static struct s_entry	*build_entry(struct dirent *entry_raw, char *dir_path)
 		perror("error on getpwid() in build_entry");
 		return (NULL);
 	}
+	ft_putchar('\n');
 	return (entry);
 }
 

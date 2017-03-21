@@ -41,4 +41,7 @@ _Bool		parse_args(int argc, char **argv, char **path);
 t_list		*get_dir_info(char *path);
 int			print_directory(t_list *dir_lst);
 
+
+void		print_permissions(mode_t mode);
+
 #endif
