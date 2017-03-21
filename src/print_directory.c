@@ -102,10 +102,23 @@ static int		print_short(t_list *dir_lst)
 	return (0);
 }
 
+int				recurse_directories(t_list *dir_lst)
+{
+	while (dir_lst)
+	{
+		if (((struct s_entry)dir_lst->content)->status->st_mode & S_IFDIR)
+			ft_printf("recurse on path: %s\n",
+				((struct s_entry)dir_lst->content)->status)
+	}
+}
+
+//todo: fix error handling
 int				print_directory(t_list *dir_lst)
 {
 	if (g_flags & FLAG_LONG)
-		return (print_long(dir_lst));
+		print_long(dir_lst);
 	else
-		return (print_short(dir_lst));
+		print_short(dir_lst);
+	if (g_flags & FLAG_RECURSIVE)
+		recurse_directories(dir_lst);
 }
