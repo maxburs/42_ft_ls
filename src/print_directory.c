@@ -16,8 +16,14 @@
 #include <libft.h> //t_list
 #include <ft_ls.h> // parse_args()
 #include <dirent.h> // opendir(), readdir()
+#include <stdint.h>
+#include <pwd.h> // getpwuid()
+#include <grp.h> // getgrgid()
+#include <uuid/uuid.h> // getgrgid()
+#include <time.h> // ctime()
+#include <stdlib.h> // free()
 
-void		print_permissions(mode_t mode)
+static void		print_permissions(mode_t mode)
 {
 	ft_putchar(S_ISDIR(mode) ? 'd' : '-');
 	ft_putchar(mode & S_IRUSR ? 'r' : '-');
@@ -31,19 +37,46 @@ void		print_permissions(mode_t mode)
 	ft_putchar(mode & S_IXOTH ? 'x' : '-');
 }
 
-int		print_directory(t_list *dir_lst)
+static char		*get_time(struct s_entry *entry)
+{
+	char			*raw_time;
+	char			*formatted_time;
+
+	if (!(raw_time = ctime(&(entry->status->st_mtime))))
+		return (NULL);
+	formatted_time = ft_strndup(raw_time + 4, 12);
+	if (formatted_time == NULL)
+		perror("ft_strndup fail in get_time");
+	return (formatted_time);
+}
+
+int				print_directory(t_list *dir_lst)
 {
 	struct s_entry	*entry;
+	char			*f_time;
 
 	while (dir_lst)
 	{
 		entry = dir_lst->content;
-		ft_printf("%10s %10hu %10s\n",
-				entry->dirent->d_name,
-				entry->dirent->d_reclen,
-				entry->path);
+		if (entry->dirent->d_name[0] == '.' && !(g_flags & FLAG_ALL))
+		{
+			dir_lst = dir_lst->next;
+			continue ;
+		}
+		//ft_printf("%10s %10hu %10s\n",
+		//		entry->dirent->d_name,
+		//		entry->dirent->d_reclen,
+		//		entry->path);
+		f_time = get_time(entry);
 		print_permissions(entry->status->st_mode);
-		ft_putchar('\n');
+		ft_printf(" %4ju %10s %10s %12ju %s %-16s\n",
+			(uintmax_t)(nlink_t)entry->status->st_nlink,
+			entry->passwd->pw_name,
+			entry->group->gr_name,
+			(uintmax_t)(off_t)entry->status->st_size,
+			f_time,
+			entry->dirent->d_name);
+		free(f_time);
 		dir_lst = dir_lst->next;
 	}
 	return (0);
