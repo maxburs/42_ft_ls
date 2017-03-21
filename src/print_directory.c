@@ -20,15 +20,15 @@
 void		print_permissions(mode_t mode)
 {
 	ft_putchar(S_ISDIR(mode) ? 'd' : '-');
-	ft_putchar(mode & 400 ? 'r' : '-');
-	ft_putchar(mode & 200 ? 'w' : '-');
-	ft_putchar(mode & 100 ? 'x' : '-');
-	ft_putchar(mode & 40 ? 'r' : '-');
-	ft_putchar(mode & 20 ? 'w' : '-');
-	ft_putchar(mode & 10 ? 'x' : '-');
-	ft_putchar(mode & 4 ? 'r' : '-');
-	ft_putchar(mode & 2 ? 'w' : '-');
-	ft_putchar(mode & 1 ? 'x' : '-');
+	ft_putchar(mode & S_IRUSR ? 'r' : '-');
+	ft_putchar(mode & S_IWUSR ? 'w' : '-');
+	ft_putchar(mode & S_IXUSR ? 'x' : '-');
+	ft_putchar(mode & S_IRGRP ? 'r' : '-');
+	ft_putchar(mode & S_IWGRP ? 'w' : '-');
+	ft_putchar(mode & S_IXGRP ? 'x' : '-');
+	ft_putchar(mode & S_IROTH ? 'r' : '-');
+	ft_putchar(mode & S_IWOTH ? 'w' : '-');
+	ft_putchar(mode & S_IXOTH ? 'x' : '-');
 }
 
 int		print_directory(t_list *dir_lst)
