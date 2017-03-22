@@ -1,5 +1,5 @@
 *.o
 *.a
 ._*
-/ls
+/ft_ls
 .DS_Store

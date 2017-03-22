@@ -20,9 +20,12 @@
 
 int		g_flags;
 
-//TODO: look into handling symoblic links with lstat()
-//TODO: listxattr() get extented attributes, what do i need them for?
-//TODO: look into whatever S and T are in the permissions
+/*
+** TODO: look into handling symoblic links with lstat()
+** TODO: listxattr() get extented attributes, what do i need them for?
+** TODO: look into whatever S and T are in the permissions
+** TODO: when username or groupname do
+*/
 
 static int		recurse_directories(t_list *dir_lst)
 {
@@ -79,37 +82,39 @@ int				path_exists(char const *path)
 	return (true);
 }
 
+int				ls_args(int argc, char **argv)
+{
+	int		retv;
+
+	retv = 0;
+	while (argc)
+	{
+		argc--;
+		if (path_exists(argv[argc]))
+			ft_printf("%s:\n", argv[argc]);
+		else
+		{
+			ft_printf("ls: %s: %s\n", argv[argc], strerror(errno));
+			retv = 1;
+			continue ;
+		}
+		if (ls_path(argv[argc]))
+			retv = 1;
+	}
+	return (retv);
+}
+
 int				main(int argc, char **argv)
 {
 	int		i;
-	_Bool	print_titles;
-	int		ret;
 
-	ret = 0;
 	g_flags = 0;
 	if (parse_flags(argc, argv, &i))
 		return (0);
 	if (g_flags & FLAG_NOSORT)
 		g_flags = g_flags | FLAG_ALL;
-	print_titles = i + 1 < argc ? true : false;
 	if (i == argc)
-		ls_path(".");
-	while (i < argc)
-	{
-		argc--;
-		if (print_titles)
-		{
-			if (path_exists(argv[argc]))
-				ft_printf("%s:\n", argv[argc]);
-			else
-			{
-				ft_printf("ls: %s: %s\n", argv[argc], strerror(errno));
-				ret = 1;
-				continue ;
-			}
-		}
-		if (ls_path(argv[argc]))
-			ret = 1;
-	}
-	return (ret);
+		return (ls_path("."));
+	else
+		return (ls_args(argc - i, argv + i));
 }

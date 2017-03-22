@@ -10,7 +10,7 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME = ls
+NAME = ft_ls
 
 LIBFTPRINTF = ./src/ft_printf/libftprintf.a
 LIBFTPRINTF_DIR = ./src/ft_printf
