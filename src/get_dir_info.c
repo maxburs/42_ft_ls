@@ -10,35 +10,27 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <ft_printf.h> //ft_printf()
-#include <ft_ls.h> // parse_args()
-#include <string.h> // NULL
-#include <stdio.h> // perror
-
-#include <libft.h> // t_list, lstadd(), lstnew()
-#include <sys/types.h> //struct dirent, struct passwd, struct group
-#include <dirent.h> // opendir(), readdir()
-#include <stdlib.h> // malloc()
-
-#include <sys/stat.h> // struct stat
-#include <unistd.h> // stat()
-
-#include <stdbool.h> // true, false
-
-#include <pwd.h> // getpwuid()
-#include <grp.h> // getgrgid()
-#include <uuid/uuid.h> // getgrgid()
-
+#include <ft_printf.h>
+#include <ft_ls.h>
+#include <string.h>
+#include <stdio.h>
+#include <libft.h>
+#include <sys/types.h>
+#include <dirent.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <stdbool.h>
+#include <pwd.h>
+#include <grp.h>
+#include <uuid/uuid.h>
 #include <errno.h>
 
-static char			*directory_append(char *dir_path, char *name)
+static char				*directory_append(char *dir_path, char *name)
 {
 	size_t	l;
 	char	*path;
 	char	*ptr;
-
-	if (dir_path[ft_strlen(dir_path) - 1] == '/')
-		return (ft_strjoin(dir_path, name));
 
 	l = ft_strlen(dir_path) + ft_strlen(name) + 1;
 	if (!(path = (char*)malloc(sizeof(char) * (l + 1))))
@@ -92,8 +84,6 @@ static int				get_group(struct s_entry *entry)
 	return (0);
 }
 
-//TODO: free entry when an error occurs
-
 static struct s_entry	*build_entry(struct dirent *entry_raw, char *dir_path)
 {
 	struct s_entry	*entry;
@@ -101,33 +91,28 @@ static struct s_entry	*build_entry(struct dirent *entry_raw, char *dir_path)
 	if (NULL == (entry = (struct s_entry*)malloc(sizeof(struct s_entry))))
 	{
 		perror("malloc error in build_entry");
-		ft_memdel((void**)&entry);
 		return (NULL);
 	}
 	ft_bzero(entry, sizeof(struct s_entry));
-	if (NULL == (entry->dirent = ft_memdup(entry_raw, sizeof(struct dirent))))
+	if ((NULL == (entry->dirent = ft_memdup(entry_raw, sizeof(struct dirent))))
+		|| (!(entry->path = directory_append(dir_path, entry_raw->d_name)))
+		|| (NULL == (entry->status = malloc(sizeof(struct stat))))
+		|| (-1 == stat(entry->path, entry->status)))
 	{
-		perror("memdup() failure in build_entry()");
-		ft_memdel((void**)&entry);
+		perror("error in build_entry()");
+		free_entry(entry);
 		return (NULL);
 	}
-
-	entry->path = directory_append(dir_path, entry_raw->d_name);;
-	if (NULL == (entry->status = malloc(sizeof(struct stat))))
-		return (NULL);
-	if (-1 == stat(entry->path, entry->status))
+	if (get_passwd(entry)
+		|| get_group(entry))
 	{
-		perror("error on stat() call in build_entry()");
+		free_entry(entry);
 		return (NULL);
 	}
-	if (get_passwd(entry))
-		return (NULL);
-	if (get_group(entry))
-		return (NULL);
 	return (entry);
 }
 
-t_list	*get_dir_info(char *path)
+t_list					*get_dir_info(char *path)
 {
 	DIR				*dirp;
 	struct dirent	*dir_cur;
@@ -140,16 +125,15 @@ t_list	*get_dir_info(char *path)
 		ft_printf("ls: cannot access '%s': %s\n", path, strerror(errno));
 		return (NULL);
 	}
+	errno = 0;
 	while ((dir_cur = readdir(dirp)))
 	{
-		if (errno)
+		if (errno || (NULL == (entry = build_entry(dir_cur, path))))
 		{
-			perror("readdir() error in recurse_me");
+			perror("error in recurse_me");
 			lstdel(&dir_lst, &free);
 			return (NULL);
 		}
-		if (NULL == (entry = build_entry(dir_cur, path)))
-			return (NULL);
 		lstadd(&dir_lst, lstnew(entry));
 	}
 	closedir(dirp);

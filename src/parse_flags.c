@@ -10,11 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <ft_ls.h> //g_flags, 
-#include <libft.h> //ft_strchri()
-#include <ft_printf.h> //ft_printf
+#include <ft_ls.h>
+#include <libft.h>
+#include <ft_printf.h>
+#include <string.h>
 
-static _Bool	parse_flags(char *parse_me)
+static _Bool	parse_flags_string(char *parse_me)
 {
 	int		i;
 
@@ -31,32 +32,20 @@ static _Bool	parse_flags(char *parse_me)
 	}
 	return (0);
 }
-static void		parse_arg_result_print(char *path)
-{
-	ft_printf(" flags: %b\n", g_flags);
-	ft_printf("  path: %s\n", path);
-}
 
-_Bool			parse_args(int argc, char **argv, char **path)
+int				parse_flags(int argc, char **argv, int *paths_start)
 {
-	while (--argc > 0)
+	int		i;
+
+	i = 1;
+	while (i < argc && argv[i][0] == '-')
 	{
-		if (argv[argc][0] == '-')
-		{
-			if (parse_flags(argv[argc] + 1))
-				return (1);
-		}
-		else if (*path)
-		{
-			ft_printf("\033[31merror: path defined twice\n\033[0m");
-			return (1);
-		}
-		else
-			*path = ft_strdup(argv[argc]);
+		if (parse_flags_string(argv[i] + 1))
+			return (-1);
+		i++;
 	}
-	if (*path == NULL)
-		*path = ft_strdup(".");
+	*paths_start = i;
 	if (g_flags & FLAG_VERBOSE)
-		parse_arg_result_print(*path);
+		ft_printf(" flags: %b\n", g_flags);
 	return (0);
 }

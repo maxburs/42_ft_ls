@@ -10,46 +10,23 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_LS_H
-# define FT_LS_H
+#include <stdlib.h>
+#include <ft_ls.h>
+#include <libft.h>
+#include <grp.h>
 
-# include <sys/stat.h>
-# include <sys/types.h>
-# include <libft.h>
-
-extern int	g_flags;
-
-# define FLAGS_INDEX	"vlRartf"
-
-# define FLAG_VERBOSE	0x1
-# define FLAG_LONG		0x2
-# define FLAG_RECURSIVE	0x4
-# define FLAG_ALL		0x8
-# define FLAG_REVERSE	0X10
-# define FLAG_MODTIME	0x20
-# define FLAG_NOSORT	0x40
-
-struct		s_entry
+void	free_entry_mask(void *content)
 {
-	struct dirent	*dirent;
-	struct stat		*status;
-	struct passwd	*passwd;
-	struct group	*group;
-	char			*path;
-};
+	free_entry((struct s_entry *)content);
+}
 
-int			parse_flags(int argc, char **argv, int *paths_start);
-t_list		*get_dir_info(char *path);
-int			print_directory(t_list *dir_lst);
-int			dir_lst_sort(t_list **dir_lst);
-int			print_long(t_list *dir_lst);
-int			ls_path(char *path);
-
-/*
-** ./src/free.c
-*/
-
-void		free_entry_mask(void *content);
-void		free_entry(struct s_entry *entry);
-
-#endif
+void	free_entry(struct s_entry *entry)
+{
+	if (entry == NULL)
+		return ;
+	ft_memdel((void**)&entry->dirent);
+	ft_memdel((void**)&entry->status);
+	ft_memdel((void**)&entry->passwd);
+	ft_memdel((void**)&entry->group);
+	ft_memdel((void**)&entry);
+}

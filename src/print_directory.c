@@ -22,7 +22,6 @@
 #include <uuid/uuid.h>
 #include <stdlib.h>
 
-
 static int		print_short(t_list *dir_lst)
 {
 	struct s_entry	*entry;
@@ -43,30 +42,6 @@ static int		print_short(t_list *dir_lst)
 	return (0);
 }
 
-static int		recurse_directories(t_list *dir_lst)
-{
-	struct s_entry	*entry;
-
-	while (dir_lst)
-	{
-		entry = dir_lst->content;
-		if ((entry->dirent->d_name[0] == '.' && !(g_flags & FLAG_ALL))
-			|| (ft_strcmp(entry->dirent->d_name, ".") == 0)
-			|| (ft_strcmp(entry->dirent->d_name, "..") == 0))
-		{
-			dir_lst = dir_lst->next;
-			continue ;
-		}
-		if (entry->status->st_mode & S_IFDIR)
-		{
-			ft_printf("\n%s:\n", entry->path);
-			ls_path(entry->path);
-		}
-		dir_lst = dir_lst->next;
-	}
-	return (0);
-}
-
 int				print_directory(t_list *dir_lst)
 {
 	if (g_flags & FLAG_LONG)
@@ -79,8 +54,5 @@ int				print_directory(t_list *dir_lst)
 		if (print_short(dir_lst))
 			return (-1);
 	}
-	if (g_flags & FLAG_RECURSIVE)
-		return (recurse_directories(dir_lst));
-	else
-		return (0);
+	return (0);
 }
