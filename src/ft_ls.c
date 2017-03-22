@@ -70,7 +70,7 @@ int				ls_path(char *path)
 	return (0);
 }
 
-int				path_exists(char const *path)
+static int		path_exists(char const *path)
 {
 	DIR				*dirp;
 
@@ -82,7 +82,7 @@ int				path_exists(char const *path)
 	return (true);
 }
 
-int				ls_args(int argc, char **argv)
+static int		ls_args(int argc, char **argv)
 {
 	int		retv;
 
@@ -106,15 +106,15 @@ int				ls_args(int argc, char **argv)
 
 int				main(int argc, char **argv)
 {
-	int		i;
+	int		flag_arg_cnt;
 
 	g_flags = 0;
-	if (parse_flags(argc, argv, &i))
+	if (parse_flags(argc, argv, &flag_arg_cnt))
 		return (0);
 	if (g_flags & FLAG_NOSORT)
 		g_flags = g_flags | FLAG_ALL;
-	if (i == argc)
+	if (flag_arg_cnt == argc)
 		return (ls_path("."));
 	else
-		return (ls_args(argc - i, argv + i));
+		return (ls_args(argc - flag_arg_cnt, argv + flag_arg_cnt));
 }

@@ -24,7 +24,8 @@ static _Bool	parse_flags_string(char *parse_me)
 		i = ft_strchri(FLAGS_INDEX, *parse_me);
 		if (i == -1)
 		{
-			ft_printf("\033[31merror: %c flag not found\n\033[0m", *parse_me);
+			ft_printf("ls: illegal option -- %c\n", *parse_me);
+			ft_printf("usage: ls [-%s] [file ...]\n", FLAGS_INDEX);
 			return (1);
 		}
 		g_flags += 1 << i;
