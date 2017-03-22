@@ -43,5 +43,6 @@ t_list		*get_dir_info(char *path);
 int			print_directory(t_list *dir_lst);
 int			ls_path(char *path);
 int			dir_lst_sort(t_list **dir_lst);
+int			print_long(t_list *dir_lst);
 
 #endif

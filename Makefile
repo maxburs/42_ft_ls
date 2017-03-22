@@ -22,6 +22,7 @@ SRC = \
 		get_dir_info.c \
 		parse_args.c \
 		print_directory.c \
+		print_long.c \
 	)
 
 OBJ = $(SRC:.c=.o)
