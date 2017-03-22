@@ -10,18 +10,18 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <ft_printf.h> //ft_printf()
-#include <sys/stat.h> // struct stat
-#include <sys/types.h> //struct dirent, struct passwd, struct group
-#include <libft.h> //t_list
-#include <ft_ls.h> // parse_args()
-#include <dirent.h> // opendir(), readdir()
+#include <ft_printf.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <libft.h>
+#include <ft_ls.h>
+#include <dirent.h>
 #include <stdint.h>
-#include <pwd.h> // getpwuid()
-#include <grp.h> // getgrgid()
-#include <uuid/uuid.h> // getgrgid()
-#include <time.h> // ctime()
-#include <stdlib.h> // free()
+#include <pwd.h>
+#include <grp.h>
+#include <uuid/uuid.h>
+#include <time.h>
+#include <stdlib.h>
 
 static void		print_permissions(mode_t mode)
 {
@@ -37,7 +37,7 @@ static void		print_permissions(mode_t mode)
 	ft_putchar(mode & S_IXOTH ? 'x' : '-');
 }
 
-static char		*get_time(struct s_entry *entry)
+static char			*get_time(struct s_entry *entry)
 {
 	char			*raw_time;
 	char			*formatted_time;
@@ -50,11 +50,25 @@ static char		*get_time(struct s_entry *entry)
 	return (formatted_time);
 }
 
-static int		print_long(t_list *dir_lst)
+static uintmax_t	get_blocks(t_list *dir_lst)
+{
+	uintmax_t	blocks;
+
+	blocks = 0;
+	while (dir_lst)
+	{
+		blocks +=((struct s_entry*)dir_lst->content)->status->st_blocks;
+		dir_lst = dir_lst->next;
+	}
+	return (blocks);
+}
+
+static int			print_long(t_list *dir_lst)
 {
 	struct s_entry	*entry;
 	char			*f_time;
 
+	ft_printf("total %ju\n", get_blocks(dir_lst));
 	while (dir_lst)
 	{
 		entry = dir_lst->content;
@@ -63,10 +77,6 @@ static int		print_long(t_list *dir_lst)
 			dir_lst = dir_lst->next;
 			continue ;
 		}
-		//ft_printf("%10s %10hu %10s\n",
-		//		entry->dirent->d_name,
-		//		entry->dirent->d_reclen,
-		//		entry->path);
 		f_time = get_time(entry);
 		print_permissions(entry->status->st_mode);
 		ft_printf(" %4ju %10s %10s %12ju %s %-16s\n",
@@ -82,7 +92,6 @@ static int		print_long(t_list *dir_lst)
 	return (0);
 }
 
-//TODO: print in columns
 static int		print_short(t_list *dir_lst)
 {
 	struct s_entry	*entry;
@@ -103,7 +112,7 @@ static int		print_short(t_list *dir_lst)
 	return (0);
 }
 
-int				recurse_directories(t_list *dir_lst)
+static int		recurse_directories(t_list *dir_lst)
 {
 	struct s_entry	*entry;
 

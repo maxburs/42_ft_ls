@@ -62,9 +62,11 @@ static int		bubble_sort(t_list **dir_lst, _Bool (compare)(struct s_entry*, struc
 
 int		dir_lst_sort(t_list **dir_lst)
 {
-	(void)(dir_lst);
-	if (g_flags & FLAG_NOSORT) //TODO: reverse order
+	if (g_flags & FLAG_NOSORT)
+	{
+		lstreverse(dir_lst);
 		return (0);
+	}
 	bubble_sort(dir_lst, &compare_names);
 	if (g_flags & FLAG_MODTIME)
 		bubble_sort(dir_lst, &compare_time);
