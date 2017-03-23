@@ -57,14 +57,14 @@ int				ls_path(char *path)
 
 	if (!(dir_lst = get_dir_info(path)))
 	{
-		return (-1);
+		return (1);
 	}
 	if (dir_lst_sort(&dir_lst)
 		|| print_directory(dir_lst)
 		|| ((g_flags & FLAG_RECURSIVE) && recurse_directories(dir_lst)))
 	{
 		lstdel(&dir_lst, &free_entry_mask);
-		return (-1);
+		return (1);
 	}
 	lstdel(&dir_lst, &free_entry_mask);
 	return (0);
@@ -82,39 +82,72 @@ static int		path_exists(char const *path)
 	return (true);
 }
 
-static int		ls_args(int argc, char **argv)
+static int		ls_args(t_list *valid_paths)
 {
 	int		retv;
 
 	retv = 0;
-	while (argc)
+	while (valid_paths)
 	{
-		argc--;
-		if (path_exists(argv[argc]))
-			ft_printf("%s:\n", argv[argc]);
-		else
-		{
-			ft_printf("ls: %s: %s\n", argv[argc], strerror(errno));
+		ft_printf("%s:\n", (char*)valid_paths->content);
+		if (ls_path((char*)valid_paths->content))
 			retv = 1;
-			continue ;
-		}
-		if (ls_path(argv[argc]))
-			retv = 1;
+		valid_paths = valid_paths->next;
+		if (valid_paths)
+			ft_putchar('\n');
 	}
 	return (retv);
 }
 
+int				validate_paths(int argc, char **argv, t_list **ret)
+{
+	int		i;
+	int		error;
+	t_list	*valid_paths;
+
+	i = 0;
+	error = 0;
+	valid_paths = NULL;
+	while (i < argc)
+	{
+		if (path_exists(argv[i]))
+			lstpush(&valid_paths, lstnew(argv[i]));
+		else
+		{
+			ft_printf("ls: %s: %s\n", argv[i], strerror(errno));
+			argv[i] = NULL;
+			error = 1;
+		}
+		i++;
+	}
+	*ret = valid_paths;
+	return (error);
+}
+
+void			nothing(void *nothing)
+{
+	(void)(nothing);
+}
+
 int				main(int argc, char **argv)
 {
-	int		flag_arg_cnt;
+	int		flg_arg_cnt;
+	t_list	*valid_paths;
+	int		ret;
 
+	ret = 0;
 	g_flags = 0;
-	if (parse_flags(argc, argv, &flag_arg_cnt))
+	if (parse_flags(argc, argv, &flg_arg_cnt))
 		return (0);
 	if (g_flags & FLAG_NOSORT)
 		g_flags = g_flags | FLAG_ALL;
-	if (flag_arg_cnt == argc)
-		return (ls_path("."));
+	ret = validate_paths(argc - flg_arg_cnt, argv + flg_arg_cnt, &valid_paths);
+	if (flg_arg_cnt == argc)
+		ret = ls_path(".") || ret;
+	else if (flg_arg_cnt + 1 == argc && valid_paths)
+		ret = ls_path(argv[flg_arg_cnt]) || ret;
 	else
-		return (ls_args(argc - flag_arg_cnt, argv + flag_arg_cnt));
+		ret = ls_args(valid_paths) || ret;
+	lstdel(&valid_paths, &nothing);
+	return (ret);
 }

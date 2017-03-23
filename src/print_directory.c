@@ -21,6 +21,7 @@
 #include <grp.h>
 #include <uuid/uuid.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 static int		print_short(t_list *dir_lst)
 {
@@ -34,11 +35,14 @@ static int		print_short(t_list *dir_lst)
 			dir_lst = dir_lst->next;
 			continue ;
 		}
-		ft_printf("%-16s",
-			entry->dirent->d_name);
+		if (g_flags & FLAG_ONEPERLN)
+			ft_printf("%s\n", entry->dirent->d_name);
+		else
+			ft_printf("%-16s", entry->dirent->d_name);
 		dir_lst = dir_lst->next;
 	}
-	ft_putchar('\n');
+	if ((g_flags & FLAG_ONEPERLN) == false)
+		ft_putchar('\n');
 	return (0);
 }
 

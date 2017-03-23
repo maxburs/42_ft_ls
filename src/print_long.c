@@ -23,9 +23,28 @@
 #include <time.h>
 #include <stdlib.h>
 
+char				file_type(mode_t mode)
+{
+	if (S_ISREG(mode))
+		return ('-');
+	if (S_ISLNK(mode))
+		return ('l');
+	if (S_ISDIR(mode))
+		return ('d');
+	if (S_ISCHR(mode))
+		return ('c');
+	if (S_ISSOCK(mode))
+		return ('s');
+	if (S_ISFIFO(mode))
+		return ('p');
+	if (S_ISBLK(mode))
+		return ('b');
+	return ('!');
+}
+
 static void			print_permissions(mode_t mode)
 {
-	ft_putchar(S_ISDIR(mode) ? 'd' : '-');
+	ft_putchar(file_type(mode));
 	ft_putchar(mode & S_IRUSR ? 'r' : '-');
 	ft_putchar(mode & S_IWUSR ? 'w' : '-');
 	ft_putchar(mode & S_IXUSR ? 'x' : '-');
@@ -79,7 +98,7 @@ int					print_long(t_list *dir_lst)
 		}
 		f_time = get_time(entry);
 		print_permissions(entry->status->st_mode);
-		ft_printf(" %4ju %10s %10s %12ju %s %-16s\n",
+		ft_printf(" %4ju %10s %10s %12ju %s %s",
 			(uintmax_t)(nlink_t)entry->status->st_nlink,
 			entry->passwd->pw_name,
 			entry->group->gr_name,
@@ -87,6 +106,9 @@ int					print_long(t_list *dir_lst)
 			f_time,
 			entry->dirent->d_name);
 		free(f_time);
+		if (entry->link_path)
+			ft_printf(" -> %s", entry->link_path);
+		ft_putchar('\n');
 		dir_lst = dir_lst->next;
 	}
 	return (0);

@@ -26,6 +26,8 @@
 #include <uuid/uuid.h>
 #include <errno.h>
 
+#define BUFF_SIZE 128
+
 static char				*directory_append(char *dir_path, char *name)
 {
 	size_t	l;
@@ -87,6 +89,7 @@ static int				get_group(struct s_entry *entry)
 static struct s_entry	*build_entry(struct dirent *entry_raw, char *dir_path)
 {
 	struct s_entry	*entry;
+	char			buff[BUFF_SIZE + 1];
 
 	if (NULL == (entry = (struct s_entry*)malloc(sizeof(struct s_entry))))
 	{
@@ -97,7 +100,7 @@ static struct s_entry	*build_entry(struct dirent *entry_raw, char *dir_path)
 	if ((NULL == (entry->dirent = ft_memdup(entry_raw, sizeof(struct dirent))))
 		|| (!(entry->path = directory_append(dir_path, entry_raw->d_name)))
 		|| (NULL == (entry->status = malloc(sizeof(struct stat))))
-		|| (-1 == stat(entry->path, entry->status)))
+		|| (-1 == lstat(entry->path, entry->status)))
 	{
 		perror("error in build_entry()");
 		free_entry(entry);
@@ -108,6 +111,17 @@ static struct s_entry	*build_entry(struct dirent *entry_raw, char *dir_path)
 	{
 		free_entry(entry);
 		return (NULL);
+	}
+	if (S_ISLNK(entry->status->st_mode))
+	{
+		if (-1 == readlink(entry->path, buff, BUFF_SIZE))
+		{
+			ft_printf("path: %s\n", entry->path);
+			perror("readlink error in build_entry");
+			return (NULL);
+		}
+		entry->link_path = ft_strdup(buff);
+		ft_strclr(buff);
 	}
 	return (entry);
 }
@@ -130,7 +144,7 @@ t_list					*get_dir_info(char *path)
 	{
 		if (errno || (NULL == (entry = build_entry(dir_cur, path))))
 		{
-			perror("error in recurse_me");
+			perror("error in get_dir_info");
 			lstdel(&dir_lst, &free);
 			return (NULL);
 		}

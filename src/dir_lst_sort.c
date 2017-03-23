@@ -37,11 +37,14 @@ int				dir_lst_sort(t_list **dir_lst)
 {
 	if (g_flags & FLAG_NOSORT)
 	{
-		lstreverse(dir_lst);
+		if (false == (g_flags & FLAG_REVERSE))
+			lstreverse(dir_lst);
 		return (0);
 	}
 	lstsort(dir_lst, &compare_names);
 	if (g_flags & FLAG_MODTIME)
 		lstsort(dir_lst, &compare_time);
+	if (g_flags & FLAG_REVERSE)
+		lstreverse(dir_lst);
 	return (0);
 }

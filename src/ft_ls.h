@@ -19,7 +19,7 @@
 
 extern int	g_flags;
 
-# define FLAGS_INDEX	"vlRartf"
+# define FLAGS_INDEX	"vlRartf1"
 
 # define FLAG_VERBOSE	0x1
 # define FLAG_LONG		0x2
@@ -28,6 +28,7 @@ extern int	g_flags;
 # define FLAG_REVERSE	0X10
 # define FLAG_MODTIME	0x20
 # define FLAG_NOSORT	0x40
+# define FLAG_ONEPERLN	0x80
 
 struct		s_entry
 {
@@ -36,6 +37,7 @@ struct		s_entry
 	struct passwd	*passwd;
 	struct group	*group;
 	char			*path;
+	char			*link_path;
 };
 
 int			parse_flags(int argc, char **argv, int *paths_start);
