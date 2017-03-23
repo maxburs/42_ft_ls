@@ -21,7 +21,6 @@
 int		g_flags;
 
 /*
-** TODO: look into handling symoblic links with lstat()
 ** TODO: listxattr() get extented attributes, what do i need them for?
 ** TODO: look into whatever S and T are in the permissions
 ** TODO: when username or groupname do
@@ -124,9 +123,16 @@ int				validate_paths(int argc, char **argv, t_list **ret)
 	return (error);
 }
 
-void			nothing(void *nothing)
+static void		nothing(void *nothing)
 {
 	(void)(nothing);
+}
+
+static _Bool	compare_names(void *entry1, void *entry2)
+{
+	if (ft_strcmp((char*)entry1, (char*)entry2) > 0)
+		return (true);
+	return (false);
 }
 
 int				main(int argc, char **argv)
@@ -142,6 +148,7 @@ int				main(int argc, char **argv)
 	if (g_flags & FLAG_NOSORT)
 		g_flags = g_flags | FLAG_ALL;
 	ret = validate_paths(argc - flg_arg_cnt, argv + flg_arg_cnt, &valid_paths);
+	lstsort(&valid_paths, &compare_names);
 	if (flg_arg_cnt == argc)
 		ret = ls_path(".") || ret;
 	else if (flg_arg_cnt + 1 == argc && valid_paths)

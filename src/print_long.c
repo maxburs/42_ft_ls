@@ -47,13 +47,22 @@ static void			print_permissions(mode_t mode)
 	ft_putchar(file_type(mode));
 	ft_putchar(mode & S_IRUSR ? 'r' : '-');
 	ft_putchar(mode & S_IWUSR ? 'w' : '-');
-	ft_putchar(mode & S_IXUSR ? 'x' : '-');
+	if (mode & S_ISUID)
+		ft_putchar(mode & S_IXUSR ? 's' : 'S');
+	else
+		ft_putchar(mode & S_IXUSR ? 'x' : '-');
 	ft_putchar(mode & S_IRGRP ? 'r' : '-');
 	ft_putchar(mode & S_IWGRP ? 'w' : '-');
-	ft_putchar(mode & S_IXGRP ? 'x' : '-');
+	if (mode & S_ISGID)
+		ft_putchar(mode & S_IXGRP ? 's' : 'S');
+	else
+		ft_putchar(mode & S_IXGRP ? 'x' : '-');
 	ft_putchar(mode & S_IROTH ? 'r' : '-');
 	ft_putchar(mode & S_IWOTH ? 'w' : '-');
-	ft_putchar(mode & S_IXOTH ? 'x' : '-');
+	if (mode & S_ISVTX)
+		ft_putchar(mode & S_IXOTH ? 't' : 'T');
+	else
+		ft_putchar(mode & S_IXOTH ? 'x' : '-');
 }
 
 static char			*get_time(struct s_entry *entry)
