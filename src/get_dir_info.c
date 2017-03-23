@@ -100,7 +100,8 @@ static struct s_entry	*build_entry(struct dirent *entry_raw, char *dir_path)
 	if ((NULL == (entry->dirent = ft_memdup(entry_raw, sizeof(struct dirent))))
 		|| (!(entry->path = directory_append(dir_path, entry_raw->d_name)))
 		|| (NULL == (entry->status = malloc(sizeof(struct stat))))
-		|| (-1 == lstat(entry->path, entry->status)))
+		|| ((g_flags & FLAG_LONG) ? (-1 == lstat(entry->path, entry->status))
+			: (-1 == stat(entry->path, entry->status))))
 	{
 		perror("error in build_entry()");
 		free_entry(entry);

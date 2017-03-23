@@ -24,6 +24,10 @@ int		g_flags;
 ** TODO: listxattr() get extented attributes, what do i need them for?
 ** TODO: look into whatever S and T are in the permissions
 ** TODO: when username or groupname do
+** TODO: handle file inputs
+** TODO: handle st_rdev device shit
+** TODO: only stat() in first directory
+** NOTE: test on /dev/
 */
 
 static int		recurse_directories(t_list *dir_lst)

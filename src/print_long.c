@@ -107,17 +107,23 @@ int					print_long(t_list *dir_lst)
 		}
 		f_time = get_time(entry);
 		print_permissions(entry->status->st_mode);
-		ft_printf(" %4ju %10s %10s %12ju %s %s",
+		ft_printf(" %4ju %10s %10s",
 			(uintmax_t)(nlink_t)entry->status->st_nlink,
 			entry->passwd->pw_name,
-			entry->group->gr_name,
-			(uintmax_t)(off_t)entry->status->st_size,
-			f_time,
-			entry->dirent->d_name);
-		free(f_time);
+			entry->group->gr_name);
+		if (S_ISBLK(entry->status->st_mode) || S_ISCHR(entry->status->st_mode))
+		{
+			ft_printf(" %8ju %8ju", (uintmax_t)major(entry->status->st_rdev), (uintmax_t)minor(entry->status->st_rdev));
+		}
+		else
+		{
+			ft_printf(" %16ju", (uintmax_t)(off_t)entry->status->st_size);
+		}
+		ft_printf("%s %s", f_time, entry->dirent->d_name);
 		if (entry->link_path)
 			ft_printf(" -> %s", entry->link_path);
 		ft_putchar('\n');
+		free(f_time);
 		dir_lst = dir_lst->next;
 	}
 	return (0);
