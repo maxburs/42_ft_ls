@@ -37,9 +37,9 @@ static int		recurse_directories(t_list *dir_lst)
 	while (dir_lst)
 	{
 		entry = dir_lst->content;
-		if ((entry->dirent->d_name[0] == '.' && !(g_flags & FLAG_ALL))
-			|| (ft_strcmp(entry->dirent->d_name, ".") == 0)
-			|| (ft_strcmp(entry->dirent->d_name, "..") == 0))
+		if ((entry->name[0] == '.' && !(g_flags & FLAG_ALL))
+			|| (ft_strcmp(entry->name, ".") == 0)
+			|| (ft_strcmp(entry->name, "..") == 0))
 		{
 			dir_lst = dir_lst->next;
 			continue ;
@@ -102,7 +102,7 @@ static int		ls_args(t_list *valid_paths)
 	return (retv);
 }
 
-int				validate_paths(int argc, char **argv, t_list **ret)
+int				open_paths(int argc, char **argv, t_list **ret)
 {
 	int		i;
 	int		error;
@@ -151,7 +151,7 @@ int				main(int argc, char **argv)
 		return (0);
 	if (g_flags & FLAG_NOSORT)
 		g_flags = g_flags | FLAG_ALL;
-	ret = validate_paths(argc - flg_arg_cnt, argv + flg_arg_cnt, &valid_paths);
+	ret = open_paths(argc - flg_arg_cnt, argv + flg_arg_cnt, &valid_paths);
 	lstsort(&valid_paths, &compare_names);
 	if (flg_arg_cnt == argc)
 		ret = ls_path(".") || ret;

@@ -32,11 +32,12 @@ extern int	g_flags;
 
 struct		s_entry
 {
-	struct dirent	*dirent;
 	struct stat		*status;
 	struct passwd	*passwd;
 	struct group	*group;
 	char			*path;
+	char			*name;
+	_Bool			dir;
 	char			*link_path;
 };
 

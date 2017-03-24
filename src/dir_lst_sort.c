@@ -19,8 +19,8 @@
 
 static _Bool	compare_names(void *entry1, void *entry2)
 {
-	if (ft_strcmp((char*)(((struct s_entry*)entry1)->dirent->d_name),
-				(char*)(((struct s_entry*)entry2)->dirent->d_name)) > 0)
+	if (ft_strcmp((char*)(((struct s_entry*)entry1)->name),
+				(char*)(((struct s_entry*)entry2)->name)) > 0)
 		return (true);
 	return (false);
 }

@@ -24,9 +24,10 @@ void	free_entry(struct s_entry *entry)
 {
 	if (entry == NULL)
 		return ;
-	ft_memdel((void**)&entry->dirent);
 	ft_memdel((void**)&entry->status);
 	ft_memdel((void**)&entry->passwd);
 	ft_memdel((void**)&entry->group);
-	ft_memdel((void**)&entry);
+	ft_strdel(&entry->path);
+	ft_strdel(&entry->name);
+	ft_strdel(&entry->link_path);
 }

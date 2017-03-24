@@ -86,32 +86,38 @@ static int				get_group(struct s_entry *entry)
 	return (0);
 }
 
-static struct s_entry	*build_entry(struct dirent *entry_raw, char *dir_path)
+char				*name_from_path(char const *path)
 {
-	struct s_entry	*entry;
+	char const	*ptr;
+	char const	*last;
+
+	ft_printf("getting name from path: %s\n", path);
+	ptr = path;
+	last = NULL;
+	while ((ptr = ft_strchr(path, '/')))
+	{
+		last = ptr;
+	}
+	if (last == NULL)
+		return (ft_strdup(path));
+	else
+		return (ft_strdup(last + 1));
+}
+
+static int		build_entry_meta(struct s_entry *entry)
+{
 	char			buff[BUFF_SIZE + 1];
 
-	if (NULL == (entry = (struct s_entry*)malloc(sizeof(struct s_entry))))
-	{
-		perror("malloc error in build_entry");
-		return (NULL);
-	}
-	ft_bzero(entry, sizeof(struct s_entry));
-	if ((NULL == (entry->dirent = ft_memdup(entry_raw, sizeof(struct dirent))))
-		|| (!(entry->path = directory_append(dir_path, entry_raw->d_name)))
-		|| (NULL == (entry->status = malloc(sizeof(struct stat))))
+	if ((NULL == (entry->status = malloc(sizeof(struct stat))))
 		|| ((g_flags & FLAG_LONG) ? (-1 == lstat(entry->path, entry->status))
-			: (-1 == stat(entry->path, entry->status))))
+			: (-1 == lstat(entry->path, entry->status))))
 	{
 		perror("error in build_entry()");
-		free_entry(entry);
-		return (NULL);
+		return (-1);
 	}
-	if (get_passwd(entry)
-		|| get_group(entry))
+	if (get_passwd(entry) || get_group(entry))
 	{
-		free_entry(entry);
-		return (NULL);
+		return (-1);
 	}
 	if (S_ISLNK(entry->status->st_mode))
 	{
@@ -119,10 +125,35 @@ static struct s_entry	*build_entry(struct dirent *entry_raw, char *dir_path)
 		{
 			ft_printf("path: %s\n", entry->path);
 			perror("readlink error in build_entry");
-			return (NULL);
+			return (-1);
 		}
 		entry->link_path = ft_strdup(buff);
 		ft_strclr(buff);
+	}
+	return (0);
+}
+
+static struct s_entry	*build_entry(struct dirent *dirent, char *dir_path)
+{
+	struct s_entry	*entry;
+
+	if (NULL == (entry = (struct s_entry*)malloc(sizeof(struct s_entry))))
+	{
+		perror("malloc error in build_entry");
+		return (NULL);
+	}
+	ft_bzero(entry, sizeof(struct s_entry));
+	if (NULL == (entry->path = directory_append(dir_path, dirent->d_name)))
+	{
+		perror("error in build_entry()");
+		free_entry(entry);
+		return (NULL);
+	}
+	entry->name = ft_strdup(dirent->d_name);
+	if (-1 == build_entry_meta(entry))
+	{
+		free_entry(entry);
+		return (NULL);
 	}
 	return (entry);
 }

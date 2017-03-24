@@ -30,15 +30,15 @@ static int		print_short(t_list *dir_lst)
 	while (dir_lst)
 	{
 		entry = dir_lst->content;
-		if (entry->dirent->d_name[0] == '.' && !(g_flags & FLAG_ALL))
+		if (entry->name[0] == '.' && !(g_flags & FLAG_ALL))
 		{
 			dir_lst = dir_lst->next;
 			continue ;
 		}
 		if (g_flags & FLAG_ONEPERLN)
-			ft_printf("%s\n", entry->dirent->d_name);
+			ft_printf("%s\n", entry->name);
 		else
-			ft_printf("%-16s", entry->dirent->d_name);
+			ft_printf("%-16s", entry->name);
 		dir_lst = dir_lst->next;
 	}
 	if ((g_flags & FLAG_ONEPERLN) == false)

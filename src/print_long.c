@@ -85,7 +85,9 @@ static uintmax_t	get_blocks(t_list *dir_lst)
 	blocks = 0;
 	while (dir_lst)
 	{
-		blocks += ((struct s_entry*)dir_lst->content)->status->st_blocks;
+		if (!(((struct s_entry*)dir_lst->content)->name[0] == '.'
+				&& !(g_flags & FLAG_ALL)))
+			blocks += ((struct s_entry*)dir_lst->content)->status->st_blocks;
 		dir_lst = dir_lst->next;
 	}
 	return (blocks);
@@ -100,7 +102,7 @@ int					print_long(t_list *dir_lst)
 	while (dir_lst)
 	{
 		entry = dir_lst->content;
-		if (entry->dirent->d_name[0] == '.' && !(g_flags & FLAG_ALL))
+		if (entry->name[0] == '.' && !(g_flags & FLAG_ALL))
 		{
 			dir_lst = dir_lst->next;
 			continue ;
@@ -119,7 +121,7 @@ int					print_long(t_list *dir_lst)
 		{
 			ft_printf(" %16ju", (uintmax_t)(off_t)entry->status->st_size);
 		}
-		ft_printf("%s %s", f_time, entry->dirent->d_name);
+		ft_printf(" %s %s", f_time, entry->name);
 		if (entry->link_path)
 			ft_printf(" -> %s", entry->link_path);
 		ft_putchar('\n');
