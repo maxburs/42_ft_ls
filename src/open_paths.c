@@ -24,7 +24,6 @@ static char				*name_from_path(char const *path)
 	char const	*ptr;
 	char const	*last;
 
-	ft_printf("getting name from path: %s\n", path);
 	ptr = path;
 	last = NULL;
 	while ((ptr = ft_strchr(path, '/')))
@@ -54,7 +53,6 @@ static struct s_entry	*build_entry(char const *path)
 		free_entry(entry);
 		return (NULL);
 	}
-	ft_printf("path: %s\nname: %s\n", path, entry->name);
 	if (-1 == build_entry_meta(entry))
 	{
 		free_entry(entry);
@@ -95,6 +93,5 @@ int				open_paths(int argc, char **argv, t_list **files, t_list **dirs)
 		}
 		i++;
 	}
-	ft_printf("hello!\n");
 	return (error);
 }

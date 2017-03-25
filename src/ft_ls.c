@@ -77,13 +77,6 @@ int				main(int argc, char **argv)
 	if (g_flags & FLAG_NOSORT)
 		g_flags = g_flags | FLAG_ALL;
 	ret = open_paths(argc - flg_arg_cnt, argv + flg_arg_cnt, &files, &dirs);
-	if (files)
-		ft_printf("files!\n");
-	if (dirs)
-	{
-		ft_printf("dirs!\n");
-		ft_printf("first dir name: %s\n", ((struct s_entry*)dirs->content)->name);
-	}
 	lstsort(&files, &compare_names);
 	//lstsort(&dirs, &compare_names);
 	//if (flg_arg_cnt == argc)
@@ -91,7 +84,7 @@ int				main(int argc, char **argv)
 	//else if (flg_arg_cnt + 1 == argc && (files || dirs))
 	//	ret = ls_path(argv[flg_arg_cnt]) || ret;
 	//else
-		//ret = print_directory(files);
+		ret = print_directory(files);
 		ret = recurse_directories(dirs, true) || ret;
 	lstdel(&files, &free_entry_mask);
 	lstdel(&dirs, &free_entry_mask);
