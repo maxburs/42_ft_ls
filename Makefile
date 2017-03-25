@@ -21,6 +21,8 @@ SRC = \
 		free.c \
 		ft_ls.c \
 		get_dir_info.c \
+		ls_path.c \
+		open_paths.c \
 		parse_flags.c \
 		print_directory.c \
 		print_long.c \

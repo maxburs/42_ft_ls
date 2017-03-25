@@ -46,7 +46,12 @@ t_list		*get_dir_info(char *path);
 int			print_directory(t_list *dir_lst);
 int			dir_lst_sort(t_list **dir_lst);
 int			print_long(t_list *dir_lst);
-int			ls_path(char *path);
+int			print_short(t_list *dir_lst);
+int			ls_dir(char *path);
+int			build_entry_meta(struct s_entry *entry);
+int			open_paths(int argc, char **argv, t_list **files, t_list **dirs);
+int			ls_entry(struct s_entry *entry);
+int			recurse_directories(t_list *dir_lst, _Bool first);
 
 /*
 ** ./src/free.c

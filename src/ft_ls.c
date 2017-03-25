@@ -29,62 +29,7 @@ int		g_flags;
 ** TODO: only stat() in first directory
 ** NOTE: test on /dev/
 */
-
-static int		recurse_directories(t_list *dir_lst)
-{
-	struct s_entry	*entry;
-
-	while (dir_lst)
-	{
-		entry = dir_lst->content;
-		if ((entry->name[0] == '.' && !(g_flags & FLAG_ALL))
-			|| (ft_strcmp(entry->name, ".") == 0)
-			|| (ft_strcmp(entry->name, "..") == 0))
-		{
-			dir_lst = dir_lst->next;
-			continue ;
-		}
-		if (entry->status->st_mode & S_IFDIR)
-		{
-			ft_printf("\n%s:\n", entry->path);
-			ls_path(entry->path);
-		}
-		dir_lst = dir_lst->next;
-	}
-	return (0);
-}
-
-int				ls_path(char *path)
-{
-	t_list	*dir_lst;
-
-	if (!(dir_lst = get_dir_info(path)))
-	{
-		return (1);
-	}
-	if (dir_lst_sort(&dir_lst)
-		|| print_directory(dir_lst)
-		|| ((g_flags & FLAG_RECURSIVE) && recurse_directories(dir_lst)))
-	{
-		lstdel(&dir_lst, &free_entry_mask);
-		return (1);
-	}
-	lstdel(&dir_lst, &free_entry_mask);
-	return (0);
-}
-
-static int		path_exists(char const *path)
-{
-	DIR				*dirp;
-
-	if ((dirp = opendir(path)) == NULL)
-	{
-		return (false);
-	}
-	closedir(dirp);
-	return (true);
-}
-
+/*
 static int		ls_args(t_list *valid_paths)
 {
 	int		retv;
@@ -93,7 +38,7 @@ static int		ls_args(t_list *valid_paths)
 	while (valid_paths)
 	{
 		ft_printf("%s:\n", (char*)valid_paths->content);
-		if (ls_path((char*)valid_paths->content))
+		if (ls_dir((char*)valid_paths->content))
 			retv = 1;
 		valid_paths = valid_paths->next;
 		if (valid_paths)
@@ -101,40 +46,17 @@ static int		ls_args(t_list *valid_paths)
 	}
 	return (retv);
 }
-
-int				open_paths(int argc, char **argv, t_list **ret)
-{
-	int		i;
-	int		error;
-	t_list	*valid_paths;
-
-	i = 0;
-	error = 0;
-	valid_paths = NULL;
-	while (i < argc)
-	{
-		if (path_exists(argv[i]))
-			lstpush(&valid_paths, lstnew(argv[i]));
-		else
-		{
-			ft_printf("ls: %s: %s\n", argv[i], strerror(errno));
-			argv[i] = NULL;
-			error = 1;
-		}
-		i++;
-	}
-	*ret = valid_paths;
-	return (error);
-}
-
+*/
+/*
 static void		nothing(void *nothing)
 {
 	(void)(nothing);
 }
-
+*/
 static _Bool	compare_names(void *entry1, void *entry2)
 {
-	if (ft_strcmp((char*)entry1, (char*)entry2) > 0)
+	if (ft_strcmp(((struct s_entry*)entry1)->name,
+			((struct s_entry*)entry2)->name) > 0)
 		return (true);
 	return (false);
 }
@@ -142,23 +64,36 @@ static _Bool	compare_names(void *entry1, void *entry2)
 int				main(int argc, char **argv)
 {
 	int		flg_arg_cnt;
-	t_list	*valid_paths;
+	t_list	*files;
+	t_list	*dirs;
 	int		ret;
 
+	files = NULL;
+	dirs = NULL;
 	ret = 0;
 	g_flags = 0;
 	if (parse_flags(argc, argv, &flg_arg_cnt))
 		return (0);
 	if (g_flags & FLAG_NOSORT)
 		g_flags = g_flags | FLAG_ALL;
-	ret = open_paths(argc - flg_arg_cnt, argv + flg_arg_cnt, &valid_paths);
-	lstsort(&valid_paths, &compare_names);
-	if (flg_arg_cnt == argc)
-		ret = ls_path(".") || ret;
-	else if (flg_arg_cnt + 1 == argc && valid_paths)
-		ret = ls_path(argv[flg_arg_cnt]) || ret;
-	else
-		ret = ls_args(valid_paths) || ret;
-	lstdel(&valid_paths, &nothing);
+	ret = open_paths(argc - flg_arg_cnt, argv + flg_arg_cnt, &files, &dirs);
+	if (files)
+		ft_printf("files!\n");
+	if (dirs)
+	{
+		ft_printf("dirs!\n");
+		ft_printf("first dir name: %s\n", ((struct s_entry*)dirs->content)->name);
+	}
+	lstsort(&files, &compare_names);
+	//lstsort(&dirs, &compare_names);
+	//if (flg_arg_cnt == argc)
+	//	ret = ls_path(".") || ret;
+	//else if (flg_arg_cnt + 1 == argc && (files || dirs))
+	//	ret = ls_path(argv[flg_arg_cnt]) || ret;
+	//else
+		//ret = print_directory(files);
+		ret = recurse_directories(dirs, true) || ret;
+	lstdel(&files, &free_entry_mask);
+	lstdel(&dirs, &free_entry_mask);
 	return (ret);
 }

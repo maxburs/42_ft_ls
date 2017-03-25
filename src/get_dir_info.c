@@ -86,25 +86,12 @@ static int				get_group(struct s_entry *entry)
 	return (0);
 }
 
-char				*name_from_path(char const *path)
-{
-	char const	*ptr;
-	char const	*last;
+/*
+** requires entry->path
+** fills in entry->status, entry->passwd, entry->group, and entry->link_path
+*/
 
-	ft_printf("getting name from path: %s\n", path);
-	ptr = path;
-	last = NULL;
-	while ((ptr = ft_strchr(path, '/')))
-	{
-		last = ptr;
-	}
-	if (last == NULL)
-		return (ft_strdup(path));
-	else
-		return (ft_strdup(last + 1));
-}
-
-static int		build_entry_meta(struct s_entry *entry)
+int					build_entry_meta(struct s_entry *entry)
 {
 	char			buff[BUFF_SIZE + 1];
 
@@ -123,6 +110,7 @@ static int		build_entry_meta(struct s_entry *entry)
 	{
 		if (-1 == readlink(entry->path, buff, BUFF_SIZE))
 		{
+			//TODO: print to stderror
 			ft_printf("path: %s\n", entry->path);
 			perror("readlink error in build_entry");
 			return (-1);
@@ -168,6 +156,7 @@ t_list					*get_dir_info(char *path)
 	dir_lst = NULL;
 	if ((dirp = opendir(path)) == NULL)
 	{
+		//TODO: print to stderror
 		ft_printf("ls: cannot access '%s': %s\n", path, strerror(errno));
 		return (NULL);
 	}
