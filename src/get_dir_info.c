@@ -99,6 +99,7 @@ int					build_entry_meta(struct s_entry *entry)
 		|| ((g_flags & FLAG_LONG) ? (-1 == lstat(entry->path, entry->status))
 			: (-1 == lstat(entry->path, entry->status))))
 	{
+		//todo: make the error print here??
 		perror("error in build_entry()");
 		return (-1);
 	}

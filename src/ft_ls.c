@@ -79,13 +79,20 @@ int				main(int argc, char **argv)
 	ret = open_paths(argc - flg_arg_cnt, argv + flg_arg_cnt, &files, &dirs);
 	lstsort(&files, &compare_names);
 	//lstsort(&dirs, &compare_names);
-	//if (flg_arg_cnt == argc)
-	//	ret = ls_path(".") || ret;
-	//else if (flg_arg_cnt + 1 == argc && (files || dirs))
-	//	ret = ls_path(argv[flg_arg_cnt]) || ret;
-	//else
+	if (flg_arg_cnt == argc)
+		ret = ls_dir(".") || ret;
+	else if (flg_arg_cnt + 1 == argc && (files || dirs))
+	{
+		if (files)
+			ret = print_directory(files) || ret;
+		else if (dirs)
+			ret = ls_dir(argv[flg_arg_cnt]) || ret;
+	}
+	else
+	{
 		ret = print_directory(files);
 		ret = recurse_directories(dirs, true) || ret;
+	}
 	lstdel(&files, &free_entry_mask);
 	lstdel(&dirs, &free_entry_mask);
 	return (ret);
