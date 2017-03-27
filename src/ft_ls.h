@@ -43,15 +43,30 @@ struct		s_entry
 
 int			parse_flags(int argc, char **argv, int *paths_start);
 t_list		*get_dir_info(char *path);
-int			print_directory(t_list *dir_lst);
 int			dir_lst_sort(t_list **dir_lst);
-int			print_long(t_list *dir_lst);
 int			print_short(t_list *dir_lst);
 int			ls_dir(char *path);
 int			build_entry_meta(struct s_entry *entry);
 int			open_paths(int argc, char **argv, t_list **files, t_list **dirs);
 int			ls_entry(struct s_entry *entry);
 int			recurse_directories(t_list *dir_lst, _Bool first);
+
+
+/*
+** ./print_directory/
+*/
+
+int			print_entry_short(struct s_entry *entry);
+int			print_dir_short(t_list *dir_lst);
+int			print_directory(t_list *dir_lst);
+int			print_entry(struct s_entry *entry);
+
+/*
+** ./print_long/
+*/
+
+int			print_entry_long(struct s_entry *entry);
+int			print_dir_long(t_list *dir_lst);
 
 /*
 ** ./src/free.c

@@ -18,6 +18,12 @@
 #include <stdbool.h>
 #include <errno.h>
 #include <stdlib.h>
+#include <unistd.h>
+
+/*
+** extract the filename from a path
+** if path ends in a '/' returns "\0"
+*/
 
 static char				*name_from_path(char const *path)
 {
@@ -26,9 +32,10 @@ static char				*name_from_path(char const *path)
 
 	ptr = path;
 	last = NULL;
-	while ((ptr = ft_strchr(path, '/')))
+	while ((ptr = ft_strchr(ptr, '/')) && ptr[1])
 	{
 		last = ptr;
+		ptr++;
 	}
 	if (last == NULL)
 		return (ft_strdup(path));
@@ -42,14 +49,12 @@ static struct s_entry	*build_entry(char const *path)
 
 	if (NULL == (entry = (struct s_entry*)malloc(sizeof(struct s_entry))))
 	{
-		perror("malloc error in open_paths/build_entry");
 		return (NULL);
 	}
 	ft_bzero(entry, sizeof(struct s_entry));
 	entry->path = ft_strdup(path);
 	if (NULL == (entry->name = name_from_path(path)))
 	{
-		perror("error in name_from_path");
 		free_entry(entry);
 		return (NULL);
 	}
@@ -61,8 +66,6 @@ static struct s_entry	*build_entry(char const *path)
 	if (entry->name[0] == '\0' || entry->status->st_mode & S_IFDIR)
 	{
 		entry->dir = true;
-		ft_strdel(&entry->name);
-		//TODO: free name?
 	}
 	return (entry);
 }
@@ -86,8 +89,8 @@ int				open_paths(int argc, char **argv, t_list **files, t_list **dirs)
 		}
 		else
 		{
-			//TODO: needs to go to stderror
-			ft_printf("ls: %s: %s\n", argv[i], strerror(errno));
+			ft_putstr_fd("ls: ", STDERR_FILENO);
+			perror(argv[i]);
 			argv[i] = NULL;
 			error = 1;
 		}

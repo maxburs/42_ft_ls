@@ -100,7 +100,9 @@ int					build_entry_meta(struct s_entry *entry)
 			: (-1 == lstat(entry->path, entry->status))))
 	{
 		//todo: make the error print here??
-		perror("error in build_entry()");
+		//ft_putstr_fd("ls: ", STDERR_FILENO);
+		//ft_putstr_fd(entry->path, STDERR_FILENO);
+		//perror(NULL);
 		return (-1);
 	}
 	if (get_passwd(entry) || get_group(entry))
@@ -111,9 +113,9 @@ int					build_entry_meta(struct s_entry *entry)
 	{
 		if (-1 == readlink(entry->path, buff, BUFF_SIZE))
 		{
-			//TODO: print to stderror
-			ft_printf("path: %s\n", entry->path);
-			perror("readlink error in build_entry");
+			//ft_putstr_fd("path: ", STDERR_FILENO);
+			//ft_putstr_fd(entry->path, STDERR_FILENO);
+			//perror(" readlink error in build_entry");
 			return (-1);
 		}
 		entry->link_path = ft_strdup(buff);
@@ -128,13 +130,11 @@ static struct s_entry	*build_entry(struct dirent *dirent, char *dir_path)
 
 	if (NULL == (entry = (struct s_entry*)malloc(sizeof(struct s_entry))))
 	{
-		perror("malloc error in build_entry");
 		return (NULL);
 	}
 	ft_bzero(entry, sizeof(struct s_entry));
 	if (NULL == (entry->path = directory_append(dir_path, dirent->d_name)))
 	{
-		perror("error in build_entry()");
 		free_entry(entry);
 		return (NULL);
 	}
@@ -155,23 +155,30 @@ t_list					*get_dir_info(char *path)
 	struct s_entry	*entry;
 
 	dir_lst = NULL;
+	errno = 0;
 	if ((dirp = opendir(path)) == NULL)
 	{
-		//TODO: print to stderror
-		ft_printf("ls: cannot access '%s': %s\n", path, strerror(errno));
+		ft_putstr_fd("ls: ", STDERR_FILENO);
+		perror(path);
 		return (NULL);
 	}
-	errno = 0;
 	while ((dir_cur = readdir(dirp)))
 	{
 		if (errno || (NULL == (entry = build_entry(dir_cur, path))))
 		{
-			perror("error in get_dir_info");
+			ft_putstr_fd("ls: ", STDERR_FILENO);
+			perror(path);
 			lstdel(&dir_lst, &free);
 			return (NULL);
 		}
 		lstadd(&dir_lst, lstnew(entry));
 	}
-	closedir(dirp);
+	if (-1 == closedir(dirp))
+	{
+		ft_putstr_fd("ls: ", STDERR_FILENO);
+		perror(path);
+		lstdel(&dir_lst, &free);
+		return (NULL);
+	}
 	return (dir_lst);
 }

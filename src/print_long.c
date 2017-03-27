@@ -23,7 +23,7 @@
 #include <time.h>
 #include <stdlib.h>
 
-char				file_type(mode_t mode)
+static char			file_type(mode_t mode)
 {
 	if (S_ISREG(mode))
 		return ('-');
@@ -93,39 +93,44 @@ static uintmax_t	get_blocks(t_list *dir_lst)
 	return (blocks);
 }
 
-int					print_long(t_list *dir_lst)
+
+int					print_entry_long(struct s_entry *entry)
 {
-	struct s_entry	*entry;
 	char			*f_time;
 
+	if (entry->name[0] == '.' && !(g_flags & FLAG_ALL))
+	{
+		return (0);
+	}
+	f_time = get_time(entry);
+	print_permissions(entry->status->st_mode);
+	ft_printf(" %4ju %10s %10s",
+		(uintmax_t)(nlink_t)entry->status->st_nlink,
+		entry->passwd->pw_name,
+		entry->group->gr_name);
+	if (S_ISBLK(entry->status->st_mode) || S_ISCHR(entry->status->st_mode))
+	{
+		ft_printf(" %8ju %8ju", (uintmax_t)major(entry->status->st_rdev), (uintmax_t)minor(entry->status->st_rdev));
+	}
+	else
+	{
+		ft_printf(" %16ju", (uintmax_t)(off_t)entry->status->st_size);
+	}
+	ft_printf(" %s %s", f_time, entry->name);
+	if (entry->link_path)
+		ft_printf(" -> %s", entry->link_path);
+	ft_putchar('\n');
+	free(f_time);
+	return (0);
+}
+
+
+int					print_dir_long(t_list *dir_lst)
+{
 	ft_printf("total %ju\n", get_blocks(dir_lst));
 	while (dir_lst)
 	{
-		entry = dir_lst->content;
-		if (entry->name[0] == '.' && !(g_flags & FLAG_ALL))
-		{
-			dir_lst = dir_lst->next;
-			continue ;
-		}
-		f_time = get_time(entry);
-		print_permissions(entry->status->st_mode);
-		ft_printf(" %4ju %10s %10s",
-			(uintmax_t)(nlink_t)entry->status->st_nlink,
-			entry->passwd->pw_name,
-			entry->group->gr_name);
-		if (S_ISBLK(entry->status->st_mode) || S_ISCHR(entry->status->st_mode))
-		{
-			ft_printf(" %8ju %8ju", (uintmax_t)major(entry->status->st_rdev), (uintmax_t)minor(entry->status->st_rdev));
-		}
-		else
-		{
-			ft_printf(" %16ju", (uintmax_t)(off_t)entry->status->st_size);
-		}
-		ft_printf(" %s %s", f_time, entry->name);
-		if (entry->link_path)
-			ft_printf(" -> %s", entry->link_path);
-		ft_putchar('\n');
-		free(f_time);
+		print_entry_long(dir_lst->content);
 		dir_lst = dir_lst->next;
 	}
 	return (0);

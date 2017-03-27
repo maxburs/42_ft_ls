@@ -28,6 +28,7 @@ int		g_flags;
 ** TODO: handle st_rdev device shit
 ** TODO: only stat() in first directory
 ** NOTE: test on /dev/
+** TODO: / dir breaks everything
 */
 /*
 static int		ls_args(t_list *valid_paths)
@@ -78,15 +79,15 @@ int				main(int argc, char **argv)
 		g_flags = g_flags | FLAG_ALL;
 	ret = open_paths(argc - flg_arg_cnt, argv + flg_arg_cnt, &files, &dirs);
 	lstsort(&files, &compare_names);
-	//lstsort(&dirs, &compare_names);
+	lstsort(&dirs, &compare_names);
 	if (flg_arg_cnt == argc)
 		ret = ls_dir(".") || ret;
-	else if (flg_arg_cnt + 1 == argc && (files || dirs))
+	else if (flg_arg_cnt + 1 == argc)
 	{
 		if (files)
 			ret = print_directory(files) || ret;
 		else if (dirs)
-			ret = ls_dir(argv[flg_arg_cnt]) || ret;
+			ret = print_entry(dirs->content) || ret;
 	}
 	else
 	{
