@@ -63,8 +63,10 @@ static struct s_entry	*build_entry(char const *path)
 		free_entry(entry);
 		return (NULL);
 	}
-	if (entry->name[0] == '\0' || entry->status->st_mode & S_IFDIR)
+	ft_printf("name ->%s<-\n", entry->name);
+	if (entry->name[ft_strlen(entry->name) - 1] == '/' || entry->status->st_mode & S_IFDIR)
 	{
+		ft_printf("hello\n");
 		entry->dir = true;
 	}
 	return (entry);

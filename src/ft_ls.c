@@ -30,30 +30,7 @@ int		g_flags;
 ** NOTE: test on /dev/
 ** TODO: / dir breaks everything
 */
-/*
-static int		ls_args(t_list *valid_paths)
-{
-	int		retv;
 
-	retv = 0;
-	while (valid_paths)
-	{
-		ft_printf("%s:\n", (char*)valid_paths->content);
-		if (ls_dir((char*)valid_paths->content))
-			retv = 1;
-		valid_paths = valid_paths->next;
-		if (valid_paths)
-			ft_putchar('\n');
-	}
-	return (retv);
-}
-*/
-/*
-static void		nothing(void *nothing)
-{
-	(void)(nothing);
-}
-*/
 static _Bool	compare_names(void *entry1, void *entry2)
 {
 	if (ft_strcmp(((struct s_entry*)entry1)->name,
@@ -85,9 +62,9 @@ int				main(int argc, char **argv)
 	else if (flg_arg_cnt + 1 == argc)
 	{
 		if (files)
-			ret = print_directory(files) || ret;
+			ret = print_entry(files->content) || ret;
 		else if (dirs)
-			ret = print_entry(dirs->content) || ret;
+			ret = ls_dir(((struct s_entry*)dirs->content)->path) || ret;
 	}
 	else
 	{

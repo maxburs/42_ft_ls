@@ -61,27 +61,3 @@ int				ls_dir(char *path)
 	lstdel(&dir_lst, &free_entry_mask);
 	return (0);
 }
-
-//int				ls_file_entries(t_list *file_lst)
-//{
-//	struct s_entry	*entry;
-//
-//	while (dir_lst)
-//	{
-//		entry = (struct s_entry*)dir_lst->content;
-//		if (entry->dir)
-//		{
-//			if (ls_dir(entry->link_path || entry->path))
-//				return (1);
-//		}
-//		else if (print_directory(entry->path)
-//			return (1);
-//		dir_lst = dir_lst->next;
-//	}
-//	return (0);
-//}
-
-//int				ls_dir_entries(t_list *dir_lst)
-//{
-//
-//}
