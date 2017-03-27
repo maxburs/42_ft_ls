@@ -49,6 +49,8 @@ int				ls_dir(char *path)
 
 	if (!(dir_lst = get_dir_info(path)))
 	{
+		ft_putstr_fd("ls: ", STDERR_FILENO);
+		perror(path);
 		return (1);
 	}
 	if (dir_lst_sort(&dir_lst)

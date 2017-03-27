@@ -99,10 +99,6 @@ int					build_entry_meta(struct s_entry *entry)
 		|| ((g_flags & FLAG_LONG) ? (-1 == lstat(entry->path, entry->status))
 			: (-1 == lstat(entry->path, entry->status))))
 	{
-		//todo: make the error print here??
-		//ft_putstr_fd("ls: ", STDERR_FILENO);
-		//ft_putstr_fd(entry->path, STDERR_FILENO);
-		//perror(NULL);
 		return (-1);
 	}
 	if (get_passwd(entry) || get_group(entry))
@@ -113,9 +109,6 @@ int					build_entry_meta(struct s_entry *entry)
 	{
 		if (-1 == readlink(entry->path, buff, BUFF_SIZE))
 		{
-			//ft_putstr_fd("path: ", STDERR_FILENO);
-			//ft_putstr_fd(entry->path, STDERR_FILENO);
-			//perror(" readlink error in build_entry");
 			return (-1);
 		}
 		entry->link_path = ft_strdup(buff);
@@ -158,16 +151,12 @@ t_list					*get_dir_info(char *path)
 	errno = 0;
 	if ((dirp = opendir(path)) == NULL)
 	{
-		ft_putstr_fd("ls: ", STDERR_FILENO);
-		perror(path);
 		return (NULL);
 	}
 	while ((dir_cur = readdir(dirp)))
 	{
 		if (errno || (NULL == (entry = build_entry(dir_cur, path))))
 		{
-			ft_putstr_fd("ls: ", STDERR_FILENO);
-			perror(path);
 			lstdel(&dir_lst, &free);
 			return (NULL);
 		}
@@ -175,8 +164,6 @@ t_list					*get_dir_info(char *path)
 	}
 	if (-1 == closedir(dirp))
 	{
-		ft_putstr_fd("ls: ", STDERR_FILENO);
-		perror(path);
 		lstdel(&dir_lst, &free);
 		return (NULL);
 	}

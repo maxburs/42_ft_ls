@@ -21,14 +21,10 @@
 int		g_flags;
 
 /*
-** TODO: listxattr() get extented attributes, what do i need them for?
-** TODO: look into whatever S and T are in the permissions
-** TODO: when username or groupname do
-** TODO: handle file inputs
-** TODO: handle st_rdev device shit
 ** TODO: only stat() in first directory
+** BUG: wtf is up with the ?? after a ./ft_ls -l /tmp command
+** BUG: ./ft_ls /tmp is wrong
 ** NOTE: test on /dev/
-** TODO: / dir breaks everything
 */
 
 static _Bool	compare_names(void *entry1, void *entry2)
