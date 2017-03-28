@@ -34,7 +34,7 @@ int				recurse_directories(t_list *dir_lst, _Bool first)
 			dir_lst = dir_lst->next;
 			continue ;
 		}
-		if (entry->status->st_mode & S_IFDIR)
+		if (S_ISDIR(entry->status->st_mode))
 		{
 			ft_printf("\n%s:\n", entry->path);
 			ls_dir(entry->path);

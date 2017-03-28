@@ -41,7 +41,7 @@ struct		s_entry
 	char			*link_path;
 };
 
-int			parse_flags(int argc, char **argv, int *paths_start);
+int			parse_flags(int *argc, char ***argv);
 t_list		*get_dir_info(char *path);
 int			dir_lst_sort(t_list **dir_lst);
 int			print_short(t_list *dir_lst);

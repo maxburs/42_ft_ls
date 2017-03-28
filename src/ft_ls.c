@@ -21,10 +21,10 @@
 int		g_flags;
 
 /*
-** TODO: only stat() in first directory
-** BUG: wtf is up with the ?? after a ./ft_ls -l /tmp command
-** BUG: ./ft_ls /tmp is wrong
+** TODO: only stat() in first directory ??
 ** NOTE: test on /dev/
+** BUG: extra newlines when running ./ft_ls . .
+** TODO: change date format when date is farther than 6 months away
 */
 
 static _Bool	compare_names(void *entry1, void *entry2)
@@ -35,27 +35,14 @@ static _Bool	compare_names(void *entry1, void *entry2)
 	return (false);
 }
 
-int				main(int argc, char **argv)
+static int		ls_args(int argc, t_list *files, t_list *dirs)
 {
-	int		flg_arg_cnt;
-	t_list	*files;
-	t_list	*dirs;
 	int		ret;
 
-	files = NULL;
-	dirs = NULL;
 	ret = 0;
-	g_flags = 0;
-	if (parse_flags(argc, argv, &flg_arg_cnt))
-		return (0);
-	if (g_flags & FLAG_NOSORT)
-		g_flags = g_flags | FLAG_ALL;
-	ret = open_paths(argc - flg_arg_cnt, argv + flg_arg_cnt, &files, &dirs);
-	lstsort(&files, &compare_names);
-	lstsort(&dirs, &compare_names);
-	if (flg_arg_cnt == argc)
+	if (argc == 0)
 		ret = ls_dir(".") || ret;
-	else if (flg_arg_cnt + 1 == argc)
+	else if (argc == 1)
 	{
 		if (files)
 		{
@@ -71,6 +58,32 @@ int				main(int argc, char **argv)
 		ret = print_directory(files);
 		ret = recurse_directories(dirs, true) || ret;
 	}
+	return (ret);
+}
+
+int				main(int argc, char **argv)
+{
+	t_list	*files;
+	t_list	*dirs;
+	int		ret;
+
+	files = NULL;
+	dirs = NULL;
+	ret = 0;
+	g_flags = 0;
+	if (parse_flags(&argc, &argv))
+		return (0);
+	if (ft_strcmp(argv[0], "--") == 0)
+	{
+		argc--;
+		argv++;
+	}
+	if (g_flags & FLAG_NOSORT)
+		g_flags = g_flags | FLAG_ALL;
+	ret = open_paths(argc, argv, &files, &dirs);
+	lstsort(&files, &compare_names);
+	lstsort(&dirs, &compare_names);
+	ret = ls_args(argc, files, dirs) || ret;
 	lstdel(&files, &free_entry_mask);
 	lstdel(&dirs, &free_entry_mask);
 	return (ret);

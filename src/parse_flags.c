@@ -34,18 +34,19 @@ static _Bool	parse_flags_string(char *parse_me)
 	return (0);
 }
 
-int				parse_flags(int argc, char **argv, int *paths_start)
+int				parse_flags(int *argc, char ***argv)
 {
 	int		i;
 
 	i = 1;
-	while (i < argc && argv[i][0] == '-')
+	while (i < *argc && (*argv)[i][0] == '-' && (*argv)[i][1] != '-')
 	{
-		if (parse_flags_string(argv[i] + 1))
+		if (parse_flags_string((*argv)[i] + 1))
 			return (-1);
 		i++;
 	}
-	*paths_start = i;
+	*argc -= i;
+	*argv += i;
 	if (g_flags & FLAG_VERBOSE)
 		ft_printf(" flags: %b\n", g_flags);
 	return (0);
