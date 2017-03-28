@@ -93,7 +93,8 @@ static int				get_group(struct s_entry *entry)
 
 int					build_entry_meta(struct s_entry *entry)
 {
-	char			buff[BUFF_SIZE + 1];
+	char			buff[BUFF_SIZE];
+	int				ret;
 
 	if ((NULL == (entry->status = malloc(sizeof(struct stat))))
 		|| ((g_flags & FLAG_LONG) ? (-1 == lstat(entry->path, entry->status))
@@ -107,11 +108,11 @@ int					build_entry_meta(struct s_entry *entry)
 	}
 	if (S_ISLNK(entry->status->st_mode))
 	{
-		if (-1 == readlink(entry->path, buff, BUFF_SIZE))
+		if (-1 == (ret = readlink(entry->path, buff, BUFF_SIZE)))
 		{
 			return (-1);
 		}
-		entry->link_path = ft_strdup(buff);
+		entry->link_path = ft_strndup(buff, ret);
 		ft_strclr(buff);
 	}
 	return (0);

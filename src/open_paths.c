@@ -63,7 +63,9 @@ static struct s_entry	*build_entry(char const *path)
 		free_entry(entry);
 		return (NULL);
 	}
-	if (entry->name[ft_strlen(entry->name) - 1] == '/' || entry->status->st_mode & S_IFDIR)
+	if (entry->name[ft_strlen(entry->name) - 1] == '/'
+		|| entry->status->st_mode & S_IFDIR
+		|| (S_ISLNK(entry->status->st_mode && (g_flags & FLAG_ALL))))
 	{
 		entry->dir = true;
 	}

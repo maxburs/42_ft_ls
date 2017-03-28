@@ -58,7 +58,11 @@ int				main(int argc, char **argv)
 	else if (flg_arg_cnt + 1 == argc)
 	{
 		if (files)
+		{
 			ret = print_entry(files->content) || ret;
+			if (false == (g_flags & FLAG_LONG)) //todo: i'm a hack, fix me!
+				ft_putchar('\n');
+		}
 		else if (dirs)
 			ret = ls_dir(((struct s_entry*)dirs->content)->path) || ret;
 	}

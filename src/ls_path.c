@@ -17,6 +17,7 @@
 #include <dirent.h>
 #include <stdbool.h>
 #include <errno.h>
+#include <unistd.h>
 
 int				recurse_directories(t_list *dir_lst, _Bool first)
 {
