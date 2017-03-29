@@ -30,4 +30,5 @@ void	free_entry(struct s_entry *entry)
 	ft_strdel(&entry->path);
 	ft_strdel(&entry->name);
 	ft_strdel(&entry->link_path);
+	free(entry);
 }

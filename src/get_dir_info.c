@@ -97,8 +97,7 @@ int					build_entry_meta(struct s_entry *entry)
 	int				ret;
 
 	if ((NULL == (entry->status = malloc(sizeof(struct stat))))
-		|| (/*(g_flags & FLAG_LONG) ? (-1 == lstat(entry->path, entry->status))
-			: */(-1 == lstat(entry->path, entry->status))))
+		|| (-1 == lstat(entry->path, entry->status)))
 	{
 		return (-1);
 	}
