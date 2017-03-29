@@ -26,7 +26,7 @@
 
 int				print_entry_short(struct s_entry *entry)
 {
-	ft_printf("%s", entry->name);
+	ft_printf("%s\n", entry->name);
 	return (0);
 }
 
@@ -36,8 +36,7 @@ int				print_dir_short(t_list *dir_lst)
 		return (0);
 	while (true)
 	{
-		if (-1 == print_entry_short(dir_lst->content))
-			return (-1);
+		ft_putstr(((struct s_entry*)dir_lst->content)->name);
 		dir_lst = dir_lst->next;
 		if (dir_lst)
 			g_flags & FLAG_ONEPERLN ? ft_putchar('\n') : ft_putstr("   ");

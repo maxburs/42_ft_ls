@@ -58,8 +58,6 @@ static int		ls_args(int argc, t_list *files, t_list *dirs)
 		if (files)
 		{
 			ret = print_entry(files->content) || ret;
-			if (false == (g_flags & FLAG_LONG)) //todo: i'm a hack, fix me!
-				ft_putchar('\n');
 		}
 		else if (dirs)
 			ret = ls_dir(((struct s_entry*)dirs->content)->path) || ret;
