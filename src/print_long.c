@@ -127,7 +127,10 @@ int					print_entry_long(struct s_entry *entry)
 
 int					print_dir_long(t_list *dir_lst)
 {
-	ft_printf("total %ju\n", get_blocks(dir_lst));
+	uintmax_t	blocks;
+
+	if ((blocks = get_blocks(dir_lst)))
+		ft_printf("total %ju\n", blocks);
 	while (dir_lst)
 	{
 		print_entry_long(dir_lst->content);

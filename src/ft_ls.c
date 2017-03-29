@@ -27,12 +27,35 @@ int		g_flags;
 ** TODO: change date format when date is farther than 6 months away
 */
 
+/*
 static _Bool	compare_names(void *entry1, void *entry2)
 {
 	if (ft_strcmp(((struct s_entry*)entry1)->name,
 			((struct s_entry*)entry2)->name) > 0)
 		return (true);
 	return (false);
+}
+*/
+
+
+static int		print_all_dirs(t_list *dir_lst)
+{
+	struct s_entry	*entry;
+
+	if (dir_lst == NULL)
+		return (1);
+	while (true)
+	{
+		entry = dir_lst->content;
+		ft_printf("%s:\n", entry->path);
+		ls_dir(entry->path);
+		dir_lst = dir_lst->next;
+		if (dir_lst)
+			ft_putchar('\n');
+		else
+			break ;
+	}
+	return (0);
 }
 
 static int		ls_args(int argc, t_list *files, t_list *dirs)
@@ -55,8 +78,10 @@ static int		ls_args(int argc, t_list *files, t_list *dirs)
 	}
 	else
 	{
-		ret = print_directory(files);
-		ret = recurse_directories(dirs, true) || ret;
+		if (files)
+			ret = print_directory(files);
+		if (dirs)
+			ret = print_all_dirs(dirs) || ret;
 	}
 	return (ret);
 }
@@ -81,8 +106,8 @@ int				main(int argc, char **argv)
 	if (g_flags & FLAG_NOSORT)
 		g_flags = g_flags | FLAG_ALL;
 	ret = open_paths(argc, argv, &files, &dirs);
-	lstsort(&files, &compare_names);
-	lstsort(&dirs, &compare_names);
+	entry_lst_sort(&files);
+	entry_lst_sort(&dirs);
 	ret = ls_args(argc, files, dirs) || ret;
 	lstdel(&files, &free_entry_mask);
 	lstdel(&dirs, &free_entry_mask);

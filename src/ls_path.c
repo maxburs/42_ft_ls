@@ -19,25 +19,32 @@
 #include <errno.h>
 #include <unistd.h>
 
-int				recurse_directories(t_list *dir_lst, _Bool first)
+static _Bool		should_recurse(struct s_entry *entry)
+{
+	return (S_ISDIR(entry->status->st_mode)
+			&& !(entry->name[0] == '.' && !(g_flags & FLAG_ALL))
+			&& (ft_strcmp(entry->name, ".") != 0)
+			&& (ft_strcmp(entry->name, "..") != 0));
+}
+
+static int			recurse_directories(t_list *dir_lst)
 {
 	struct s_entry	*entry;
+	_Bool			has_printed;
 
+	if (dir_lst == NULL)
+		return (1);
+	has_printed = false;
 	while (dir_lst)
 	{
 		entry = dir_lst->content;
-		if (first == false
-			&& ((entry->name[0] == '.' && !(g_flags & FLAG_ALL))
-			|| (ft_strcmp(entry->name, ".") == 0)
-			|| (ft_strcmp(entry->name, "..") == 0)))
+		if (should_recurse(dir_lst->content))
 		{
-			dir_lst = dir_lst->next;
-			continue ;
-		}
-		if (S_ISDIR(entry->status->st_mode))
-		{
-			ft_printf("\n%s:\n", entry->path);
+			if (has_printed)
+				ft_putchar('\n');
+			ft_printf("%s:\n", ((struct s_entry*)(dir_lst->content))->path);
 			ls_dir(entry->path);
+			has_printed = true;
 		}
 		dir_lst = dir_lst->next;
 	}
@@ -54,9 +61,9 @@ int				ls_dir(char *path)
 		perror(path);
 		return (1);
 	}
-	if (dir_lst_sort(&dir_lst)
+	if (entry_lst_sort(&dir_lst)
 		|| print_directory(dir_lst)
-		|| ((g_flags & FLAG_RECURSIVE) && recurse_directories(dir_lst, false)))
+		|| ((g_flags & FLAG_RECURSIVE) && recurse_directories(dir_lst)))
 	{
 		lstdel(&dir_lst, &free_entry_mask);
 		return (1);
