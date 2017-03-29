@@ -30,21 +30,21 @@ static _Bool		should_recurse(struct s_entry *entry)
 static int			recurse_directories(t_list *dir_lst)
 {
 	struct s_entry	*entry;
-	_Bool			has_printed;
+	//_Bool			has_printed;
 
 	if (dir_lst == NULL)
 		return (1);
-	has_printed = false;
+	//has_printed = false;
 	while (dir_lst)
 	{
 		entry = dir_lst->content;
 		if (should_recurse(dir_lst->content))
 		{
-			if (has_printed)
+			//if (has_printed)
 				ft_putchar('\n');
 			ft_printf("%s:\n", ((struct s_entry*)(dir_lst->content))->path);
 			ls_dir(entry->path);
-			has_printed = true;
+			//has_printed = true;
 		}
 		dir_lst = dir_lst->next;
 	}
