@@ -24,7 +24,7 @@ int		g_flags;
 ** TODO: only stat() in first directory ??
 ** NOTE: test on /dev/
 ** TODO: change date format when date is farther than 6 months away
-** TODO: fallback on 
+** BUG: ls *: missing newline: just fixed, is it working??
 */
 
 static int		print_all_dirs(t_list *dir_lst)
@@ -69,6 +69,8 @@ static int		ls_args(int argc, t_list *files, t_list *dirs)
 	{
 		if (files)
 			ret = print_directory(files);
+		if (files && dirs)
+			ft_putchar('\n');
 		if (dirs)
 			ret = print_all_dirs(dirs) || ret;
 	}
