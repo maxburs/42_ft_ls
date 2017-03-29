@@ -22,6 +22,7 @@
 #include <uuid/uuid.h>
 #include <time.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 static char			file_type(mode_t mode)
 {
@@ -65,16 +66,29 @@ static void			print_permissions(mode_t mode)
 		ft_putchar(mode & S_IXOTH ? 'x' : '-');
 }
 
+#define SIXMONTHS ((365/2) * 86400)  
+
+static _Bool		within_six_months(time_t time1, time_t time2)
+{
+	return (time1 < SIXMONTHS + time2 && time2 < SIXMONTHS + time1);
+}
+
 static char			*get_time(struct s_entry *entry)
 {
-	char			*raw_time;
-	char			*formatted_time;
+	char		*raw_time;
+	char		*formatted_time;
+	time_t		current_time;
 
+	current_time = time(NULL);
+	if (current_time == -1)
+		return (NULL);
 	if (!(raw_time = ctime(&(entry->status->st_mtime))))
 		return (NULL);
 	formatted_time = ft_strndup(raw_time + 4, 12);
 	if (formatted_time == NULL)
-		perror("ft_strndup fail in get_time");
+		return (NULL);
+	if (within_six_months(entry->status->st_mtime, current_time))
+		ft_strncpy(formatted_time + 7, raw_time + 19, 5);
 	return (formatted_time);
 }
 
