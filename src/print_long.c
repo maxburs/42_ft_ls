@@ -70,7 +70,7 @@ static void			print_permissions(mode_t mode)
 
 static _Bool		within_six_months(time_t time1, time_t time2)
 {
-	return (time1 < SIXMONTHS + time2 && time2 < SIXMONTHS + time1);
+	return (time1 < SIXMONTHS + time2 && time2 > SIXMONTHS + time1);
 }
 
 static char			*get_time(struct s_entry *entry)
@@ -137,10 +137,8 @@ int					print_entry_long(struct s_entry *entry)
 
 int					print_dir_long(t_list *dir_lst)
 {
-	uintmax_t	blocks;
-
-	if ((blocks = get_blocks(dir_lst)))
-		ft_printf("total %ju\n", blocks);
+	if (dir_lst)
+		ft_printf("total %ju\n", get_blocks(dir_lst));
 	while (dir_lst)
 	{
 		print_entry_long(dir_lst->content);

@@ -53,7 +53,9 @@ static int		ls_args(int argc, t_list *files, t_list *dirs)
 
 	ret = 0;
 	if (argc == 0)
+	{
 		ret = ls_dir(".") || ret;
+	}
 	else if (argc == 1)
 	{
 		if (files)
@@ -85,7 +87,7 @@ int				main(int argc, char **argv)
 	g_flags = 0;
 	if (parse_flags(&argc, &argv))
 		return (0);
-	if (ft_strcmp(argv[0], "--") == 0)
+	if (argc > 0 && ft_strcmp(argv[0], "--") == 0)
 	{
 		argc--;
 		argv++;
