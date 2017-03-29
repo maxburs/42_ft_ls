@@ -26,17 +26,6 @@ int		g_flags;
 ** TODO: change date format when date is farther than 6 months away
 */
 
-/*
-static _Bool	compare_names(void *entry1, void *entry2)
-{
-	if (ft_strcmp(((struct s_entry*)entry1)->name,
-			((struct s_entry*)entry2)->name) > 0)
-		return (true);
-	return (false);
-}
-*/
-
-
 static int		print_all_dirs(t_list *dir_lst)
 {
 	struct s_entry	*entry;
