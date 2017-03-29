@@ -98,10 +98,6 @@ int					print_entry_long(struct s_entry *entry)
 {
 	char			*f_time;
 
-	if (entry->name[0] == '.' && !(g_flags & FLAG_ALL))
-	{
-		return (0);
-	}
 	f_time = get_time(entry);
 	print_permissions(entry->status->st_mode);
 	ft_printf(" %4ju %10s %10s",

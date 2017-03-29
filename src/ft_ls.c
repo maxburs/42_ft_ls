@@ -23,7 +23,6 @@ int		g_flags;
 /*
 ** TODO: only stat() in first directory ??
 ** NOTE: test on /dev/
-** BUG: extra newlines when running ./ft_ls . . in empty dir
 ** TODO: change date format when date is farther than 6 months away
 */
 

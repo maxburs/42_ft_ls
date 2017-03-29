@@ -26,27 +26,25 @@
 
 int				print_entry_short(struct s_entry *entry)
 {
-	if (entry->name[0] == '.' && !(g_flags & FLAG_ALL))
-	{
-		return (0);
-	}
-	if (g_flags & FLAG_ONEPERLN)
-		ft_printf("%s\n", entry->name);
-	else
-		ft_printf("%-16s", entry->name);
+	ft_printf("%s", entry->name);
 	return (0);
 }
 
 int				print_dir_short(t_list *dir_lst)
 {
-	while (dir_lst)
+	if (dir_lst == NULL)
+		return (0);
+	while (true)
 	{
 		if (-1 == print_entry_short(dir_lst->content))
 			return (-1);
 		dir_lst = dir_lst->next;
+		if (dir_lst)
+			g_flags & FLAG_ONEPERLN ? ft_putchar('\n') : ft_putstr("   ");
+		else
+			break ;
 	}
-	if ((g_flags & FLAG_ONEPERLN) == false)
-		ft_putchar('\n');
+	ft_putchar('\n');
 	return (0);
 }
 

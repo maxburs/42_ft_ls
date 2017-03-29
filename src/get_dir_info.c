@@ -161,7 +161,10 @@ t_list					*get_dir_info(char *path)
 			lstdel(&dir_lst, &free);
 			return (NULL);
 		}
-		lstadd(&dir_lst, lstnew(entry));
+		if (entry->name[0] == '.' && !(g_flags & FLAG_ALL))
+			free_entry(entry);
+		else
+			lstadd(&dir_lst, lstnew(entry));
 	}
 	if (-1 == closedir(dirp))
 	{

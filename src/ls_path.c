@@ -55,7 +55,7 @@ int				ls_dir(char *path)
 {
 	t_list	*dir_lst;
 
-	if (!(dir_lst = get_dir_info(path)))
+	if ((dir_lst = get_dir_info(path)) == NULL && errno)
 	{
 		ft_putstr_fd("ls: ", STDERR_FILENO);
 		perror(path);
