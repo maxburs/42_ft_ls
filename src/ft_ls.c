@@ -24,7 +24,7 @@ int		g_flags;
 ** TODO: only stat() in first directory ??
 ** NOTE: test on /dev/
 ** TODO: change date format when date is farther than 6 months away
-** TODO: test on files/dirs what i don't have permissions on
+** TODO: fallback on 
 */
 
 static int		print_all_dirs(t_list *dir_lst)

@@ -27,8 +27,15 @@ static _Bool	compare_names(void *entry1, void *entry2)
 
 static _Bool	compare_time(void *entry1, void *entry2)
 {
-	if (((struct s_entry*)entry1)->status->st_mtime <
-			((struct s_entry*)entry2)->status->st_mtime)
+	struct stat	*status1;
+	struct stat	*status2;
+
+	status1 = ((struct s_entry*)entry1)->status;
+	status2 = ((struct s_entry*)entry2)->status;
+	if (status1->st_mtime < status2->st_mtime)
+		return (true);
+	if (status1->st_mtime == status2->st_mtime
+		&& status1->st_mtimespec.tv_nsec < status2->st_mtimespec.tv_nsec)
 		return (true);
 	return (false);
 }
