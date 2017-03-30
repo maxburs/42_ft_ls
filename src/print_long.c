@@ -120,7 +120,8 @@ int					print_entry_long(struct s_entry *entry)
 		entry->group->gr_name);
 	if (S_ISBLK(entry->status->st_mode) || S_ISCHR(entry->status->st_mode))
 	{
-		ft_printf(" %8ju %8ju", (uintmax_t)major(entry->status->st_rdev), (uintmax_t)minor(entry->status->st_rdev));
+		ft_printf(" %8ju %8ju", (uintmax_t)major(entry->status->st_rdev),
+								(uintmax_t)minor(entry->status->st_rdev));
 	}
 	else
 	{
