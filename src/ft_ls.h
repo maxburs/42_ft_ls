@@ -94,8 +94,17 @@ t_list				*get_dir_info(char *path);
 
 int					ls_dir(char *path);
 
+
+
 /*
-** ./print_directory.c
+** ./print/
+*/
+
+int					entry_long_wwidths(struct s_entry *entry,
+												struct s_widths *widths);
+
+/*
+** ./print/print_directory.c
 */
 
 int					print_entry_short(struct s_entry *entry);
@@ -104,7 +113,7 @@ int					print_directory(t_list *dir_lst, _Bool print_total);
 int					print_entry(struct s_entry *entry);
 
 /*
-** ./print_long.c
+** ./print/print_long.c
 */
 
 int					print_entry_long(struct s_entry *entry);

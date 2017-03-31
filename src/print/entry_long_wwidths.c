@@ -92,70 +92,31 @@ static char			*get_time(struct s_entry *entry)
 	return (formatted_time);
 }
 
-static uintmax_t	get_blocks(t_list *dir_lst)
-{
-	uintmax_t	blocks;
-
-	blocks = 0;
-	while (dir_lst)
-	{
-		if (!(((struct s_entry*)dir_lst->content)->name[0] == '.'
-				&& !(g_flags & FLAG_ALL)))
-			blocks += ((struct s_entry*)dir_lst->content)->status->st_blocks;
-		dir_lst = dir_lst->next;
-	}
-	return (blocks);
-}
-
-static int			entry_long_wwidths(struct s_entry *entry,
-														struct s_widths *widths)
+int			entry_long_wwidths(struct s_entry *entry, struct s_widths *widths)
 {
 	char			*f_time;
 
 	f_time = get_time(entry);
 	print_permissions(entry->status->st_mode);
-	ft_printf("  %*ju", widths->links, (uintmax_t)(nlink_t)entry->status->st_nlink);
+	ft_printf("  %*ju", widths->links, (uintmax_t)entry->status->st_nlink);
 	ft_printf(" %-*s", widths->owner, entry->passwd->pw_name);
 	ft_printf("  %-*s", widths->group, entry->group->gr_name);
 	if (S_ISBLK(entry->status->st_mode) || S_ISCHR(entry->status->st_mode))
 	{
-		ft_printf("  %*ju", widths->major, (uintmax_t)major(entry->status->st_rdev));
-		ft_printf(", %*ju", widths->minor, (uintmax_t)minor(entry->status->st_rdev));
+		ft_printf("  %*ju",
+					widths->major, (uintmax_t)major(entry->status->st_rdev));
+		ft_printf(", %*ju",
+					widths->minor, (uintmax_t)minor(entry->status->st_rdev));
 	}
 	else
 	{
-		ft_printf("  %*ju", widths->blocks, (uintmax_t)(off_t)entry->status->st_size);
+		ft_printf("  %*ju",
+					widths->blocks, (uintmax_t)(off_t)entry->status->st_size);
 	}
 	ft_printf(" %s %s", f_time, entry->name);
 	if (entry->link_path)
 		ft_printf(" -> %s", entry->link_path);
 	ft_putchar('\n');
 	free(f_time);
-	return (0);
-}
-
-
-int					print_entry_long(struct s_entry *entry)
-{
-	struct s_widths		widths;
-
-	ft_bzero(&widths, sizeof(widths));
-	entry_long_wwidths(entry, &widths);
-	return (0);
-}
-
-int					print_dir_long(t_list *dir_lst, _Bool print_total)
-{
-	struct s_widths		*widths;
-
-	widths = find_widths(dir_lst);
-	if (dir_lst && print_total)
-		ft_printf("total %ju\n", get_blocks(dir_lst));
-	while (dir_lst)
-	{
-		entry_long_wwidths(dir_lst->content, widths);
-		dir_lst = dir_lst->next;
-	}
-	free(widths);
 	return (0);
 }

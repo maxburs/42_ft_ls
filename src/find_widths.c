@@ -24,20 +24,11 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-static void			update_if_larger(struct s_widths *widths,
+static void			update_blk_mjr_mnr(struct s_widths *widths,
 												struct s_entry *entry)
 {
 	unsigned int	size;
 
-	size = (unsigned int)ft_numlen_un(entry->status->st_nlink, 10);
-	if (size > widths->links)
-		widths->links = size;
-	size = (unsigned int)ft_strlen(entry->passwd->pw_name);
-	if (size > widths->owner)
-		widths->owner = size;
-	size = (unsigned int)ft_strlen(entry->group->gr_name);
-	if (size > widths->group)
-		widths->group = size;
 	if (S_ISBLK(entry->status->st_mode) || S_ISCHR(entry->status->st_mode))
 	{
 		size = (unsigned int)ft_numlen_un(major(entry->status->st_rdev), 10);
@@ -55,6 +46,22 @@ static void			update_if_larger(struct s_widths *widths,
 	}
 }
 
+static void			update_if_larger(struct s_widths *widths,
+												struct s_entry *entry)
+{
+	unsigned int	size;
+
+	size = (unsigned int)ft_numlen_un(entry->status->st_nlink, 10);
+	if (size > widths->links)
+		widths->links = size;
+	size = (unsigned int)ft_strlen(entry->passwd->pw_name);
+	if (size > widths->owner)
+		widths->owner = size;
+	size = (unsigned int)ft_strlen(entry->group->gr_name);
+	if (size > widths->group)
+		widths->group = size;
+}
+
 struct s_widths		*find_widths(t_list *dir_lst)
 {
 	struct s_widths		*widths;
@@ -67,6 +74,7 @@ struct s_widths		*find_widths(t_list *dir_lst)
 	while (dir_lst)
 	{
 		update_if_larger(widths, dir_lst->content);
+		update_blk_mjr_mnr(widths, dir_lst->content);
 		dir_lst = dir_lst->next;
 	}
 	if (widths->major > 0 && widths->major + widths->minor + 2 > widths->blocks)

@@ -25,8 +25,11 @@ SRC = \
 		ls_path.c \
 		open_paths.c \
 		parse_flags.c \
-		print_directory.c \
-		print_long.c \
+		$(addprefix print/, \
+			entry_long_wwidths.c \
+			print_directory.c \
+			print_long.c \
+		) \
 	)
 
 OBJ = $(SRC:.c=.o)

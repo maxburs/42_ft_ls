@@ -45,12 +45,8 @@ static char				*name_from_path(char const *path)
 
 void					print_error(char const *name)
 {
-	//char	*name;
-
-	//name = name_from_path(path);
 	ft_putstr_fd("ls: ", STDERR_FILENO);
 	perror(name);
-	//free(name);
 }
 
 static _Bool			treat_link_as_dir(struct s_entry *entry)
@@ -81,7 +77,7 @@ static struct s_entry	*build_entry(char const *path)
 		return (NULL);
 	}
 	if (path[ft_strlen(path) - 1] == '/'
-		|| /*entry->status->st_mode & S_IFDIR*/S_ISDIR(entry->status->st_mode)
+		|| S_ISDIR(entry->status->st_mode)
 		|| treat_link_as_dir(entry))
 	{
 		entry->dir = true;

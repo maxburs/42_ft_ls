@@ -150,9 +150,7 @@ t_list					*get_dir_info(char *path)
 	dir_lst = NULL;
 	errno = 0;
 	if ((dirp = opendir(path)) == NULL)
-	{
 		return (NULL);
-	}
 	while ((dir_cur = readdir(dirp)))
 	{
 		if (errno || (NULL == (entry = build_entry(dir_cur, path))))
@@ -166,9 +164,6 @@ t_list					*get_dir_info(char *path)
 			lstadd(&dir_lst, lstnew(entry));
 	}
 	if (-1 == closedir(dirp))
-	{
 		lstdel(&dir_lst, &free);
-		return (NULL);
-	}
 	return (dir_lst);
 }

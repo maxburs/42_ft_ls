@@ -20,11 +20,6 @@
 
 int		g_flags;
 
-/*
-** TODO: only stat() in first directory ??
-** NOTE: test on /dev/
-*/
-
 static int		print_all_dirs(t_list *dir_lst)
 {
 	struct s_entry	*entry;
