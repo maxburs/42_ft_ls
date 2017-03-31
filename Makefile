@@ -17,14 +17,16 @@ LIBFTPRINTF_DIR = ./src/ft_printf
 
 SRC = \
 	$(addprefix ./src/, \
-		entry_lst_sort.c \
-		find_widths.c \
 		free.c \
 		ft_ls.c \
-		get_dir_info.c \
-		ls_path.c \
-		open_paths.c \
+		ls_dir.c \
+		arg_to_entry.c \
 		parse_flags.c \
+		$(addprefix entry/, \
+			entry_find_widths.c \
+			entry_lst_sort.c \
+			entry_get_meta.c \
+		) \
 		$(addprefix print/, \
 			entry_long_wwidths.c \
 			print_directory.c \

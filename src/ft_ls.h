@@ -53,13 +53,13 @@ struct				s_widths
 };
 
 int					parse_flags(int *argc, char ***argv);
+void				print_error(char const *name);
 
 /*
-** ./open_paths.c
+** ./arg_to_entry.c
 */
 
-void				print_error(char const *name);
-int					open_paths(int argc, char **argv,
+int					arg_to_entry(int argc, char **argv,
 											t_list **files, t_list **dirs);
 
 /*
@@ -69,10 +69,10 @@ int					open_paths(int argc, char **argv,
 int					entry_lst_sort(t_list **dir_lst);
 
 /*
-** ./find_widths.c
+** ./entry_find_widths.c
 */
 
-struct s_widths		*find_widths(t_list *dir_lst);
+struct s_widths		*entry_find_widths(t_list *dir_lst);
 
 /*
 ** ./src/free.c
@@ -85,8 +85,7 @@ void				free_entry(struct s_entry *entry);
 ** ./get_dir_info.c
 */
 
-int					build_entry_meta(struct s_entry *entry);
-t_list				*get_dir_info(char *path);
+int					entry_get_meta(struct s_entry *entry);
 
 /*
 ** ./ls_path.c

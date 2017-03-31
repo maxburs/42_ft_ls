@@ -18,6 +18,7 @@
 #include <stdbool.h>
 #include <errno.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 static _Bool		should_recurse(struct s_entry *entry)
 {
@@ -45,6 +46,73 @@ static int			recurse_directories(t_list *dir_lst)
 		dir_lst = dir_lst->next;
 	}
 	return (0);
+}
+
+static char				*directory_append(char *dir_path, char *name)
+{
+	size_t	l;
+	char	*path;
+	char	*ptr;
+
+	l = ft_strlen(dir_path) + ft_strlen(name) + 1;
+	if (!(path = (char*)malloc(sizeof(char) * (l + 1))))
+		return (NULL);
+	path[l] = '\0';
+	ptr = ft_strplace(path, dir_path);
+	ptr[1] = '/';
+	ft_strplace(ptr + 2, name);
+	return (path);
+}
+
+static struct s_entry	*build_entry(struct dirent *dirent, char *dir_path)
+{
+	struct s_entry	*entry;
+
+	if (NULL == (entry = (struct s_entry*)malloc(sizeof(struct s_entry))))
+	{
+		return (NULL);
+	}
+	ft_bzero(entry, sizeof(struct s_entry));
+	if (NULL == (entry->path = directory_append(dir_path, dirent->d_name)))
+	{
+		free_entry(entry);
+		return (NULL);
+	}
+	entry->name = ft_strdup(dirent->d_name);
+	if (-1 == entry_get_meta(entry))
+	{
+		free_entry(entry);
+		return (NULL);
+	}
+	return (entry);
+}
+
+static t_list		*get_dir_info(char *path)
+{
+	DIR				*dirp;
+	struct dirent	*dir_cur;
+	t_list			*dir_lst;
+	struct s_entry	*entry;
+
+	dir_lst = NULL;
+	errno = 0;
+	if ((dirp = opendir(path)) == NULL)
+		return (NULL);
+	while ((dir_cur = readdir(dirp)))
+	{
+		if (errno || (NULL == (entry = build_entry(dir_cur, path))))
+		{
+			lstdel(&dir_lst, &free);
+			return (NULL);
+		}
+		if (entry->name[0] == '.' && !(g_flags & FLAG_ALL))
+			free_entry(entry);
+		else
+			lstadd(&dir_lst, lstnew(entry));
+	}
+	if (-1 == closedir(dirp))
+		lstdel(&dir_lst, &free);
+	return (dir_lst);
 }
 
 int				ls_dir(char *path)

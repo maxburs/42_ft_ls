@@ -17,8 +17,15 @@
 #include <dirent.h>
 #include <stdbool.h>
 #include <errno.h>
+#include <unistd.h>
 
 int		g_flags;
+
+void			print_error(char const *name)
+{
+	ft_putstr_fd("ls: ", STDERR_FILENO);
+	perror(name);
+}
 
 static int		print_all_dirs(t_list *dir_lst)
 {
@@ -115,7 +122,7 @@ int				main(int argc, char **argv)
 	if (g_flags & FLAG_NOSORT)
 		g_flags = g_flags | FLAG_ALL;
 	sort_args(argc, argv);
-	ret = open_paths(argc, argv, &files, &dirs);
+	ret = arg_to_entry(argc, argv, &files, &dirs);
 	entry_lst_sort(&files);
 	entry_lst_sort(&dirs);
 	ret = ls_args(argc, files, dirs) || ret;

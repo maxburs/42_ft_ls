@@ -43,13 +43,7 @@ static char				*name_from_path(char const *path)
 		return (ft_strdup(last + 1));
 }
 
-void					print_error(char const *name)
-{
-	ft_putstr_fd("ls: ", STDERR_FILENO);
-	perror(name);
-}
-
-static _Bool			treat_link_as_dir(struct s_entry *entry)
+static _Bool			should_treat_link_as_dir(struct s_entry *entry)
 {
 	struct stat		status;
 
@@ -71,14 +65,14 @@ static struct s_entry	*build_entry(char const *path)
 	}
 	ft_bzero(entry, sizeof(struct s_entry));
 	entry->path = ft_strdup(path);
-	if (-1 == build_entry_meta(entry))
+	if (-1 == entry_get_meta(entry))
 	{
 		free_entry(entry);
 		return (NULL);
 	}
 	if (path[ft_strlen(path) - 1] == '/'
 		|| S_ISDIR(entry->status->st_mode)
-		|| treat_link_as_dir(entry))
+		|| should_treat_link_as_dir(entry))
 	{
 		entry->dir = true;
 	}
@@ -94,7 +88,8 @@ static struct s_entry	*build_entry(char const *path)
 	return (entry);
 }
 
-int				open_paths(int argc, char **argv, t_list **files, t_list **dirs)
+int				arg_to_entry(int argc, char **argv,
+											t_list **files, t_list **dirs)
 {
 	int				i;
 	int				error;

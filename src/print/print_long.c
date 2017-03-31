@@ -52,7 +52,7 @@ int					print_dir_long(t_list *dir_lst, _Bool print_total)
 {
 	struct s_widths		*widths;
 
-	widths = find_widths(dir_lst);
+	widths = entry_find_widths(dir_lst);
 	if (dir_lst && print_total)
 		ft_printf("total %ju\n", get_blocks(dir_lst));
 	while (dir_lst)

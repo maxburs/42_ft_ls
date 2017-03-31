@@ -62,7 +62,7 @@ static void			update_if_larger(struct s_widths *widths,
 		widths->group = size;
 }
 
-struct s_widths		*find_widths(t_list *dir_lst)
+struct s_widths		*entry_find_widths(t_list *dir_lst)
 {
 	struct s_widths		*widths;
 
