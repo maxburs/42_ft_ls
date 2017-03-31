@@ -114,18 +114,18 @@ int					print_entry_long(struct s_entry *entry)
 
 	f_time = get_time(entry);
 	print_permissions(entry->status->st_mode);
-	ft_printf(" %4ju %10s %10s",
+	ft_printf(" %ju %s %s",
 		(uintmax_t)(nlink_t)entry->status->st_nlink,
 		entry->passwd->pw_name,
 		entry->group->gr_name);
 	if (S_ISBLK(entry->status->st_mode) || S_ISCHR(entry->status->st_mode))
 	{
-		ft_printf(" %8ju %8ju", (uintmax_t)major(entry->status->st_rdev),
+		ft_printf(" %ju %ju", (uintmax_t)major(entry->status->st_rdev),
 								(uintmax_t)minor(entry->status->st_rdev));
 	}
 	else
 	{
-		ft_printf(" %16ju", (uintmax_t)(off_t)entry->status->st_size);
+		ft_printf(" %ju", (uintmax_t)(off_t)entry->status->st_size);
 	}
 	ft_printf(" %s %s", f_time, entry->name);
 	if (entry->link_path)
@@ -135,14 +135,43 @@ int					print_entry_long(struct s_entry *entry)
 	return (0);
 }
 
+int					entry_long_wwidths(struct s_entry *entry,
+														struct s_widths widths)
+{
+	char			*f_time;
+
+	f_time = get_time(entry);
+	print_permissions(entry->status->st_mode);
+	ft_printf("  %*ju", widths.links, (uintmax_t)(nlink_t)entry->status->st_nlink);
+	ft_printf(" %-*s", widths.owner, entry->passwd->pw_name);
+	ft_printf("  %-*s", widths.group, entry->group->gr_name);
+	if (S_ISBLK(entry->status->st_mode) || S_ISCHR(entry->status->st_mode))
+	{
+		ft_printf(" %*ju", widths.major, (uintmax_t)major(entry->status->st_rdev));
+		ft_printf(" %*ju", widths.minor, (uintmax_t)minor(entry->status->st_rdev));
+	}
+	else
+	{
+		ft_printf(" %*ju", widths.blocks, (uintmax_t)(off_t)entry->status->st_size);
+	}
+	ft_printf(" %s %s", f_time, entry->name);
+	if (entry->link_path)
+		ft_printf(" -> %s", entry->link_path);
+	ft_putchar('\n');
+	free(f_time);
+	return (0);
+}
 
 int					print_dir_long(t_list *dir_lst)
 {
+	struct s_widths		*widths;
+
+	widths = find_widths(dir_lst);
 	if (dir_lst)
 		ft_printf("total %ju\n", get_blocks(dir_lst));
 	while (dir_lst)
 	{
-		print_entry_long(dir_lst->content);
+		entry_long_wwidths(dir_lst->content, *widths);
 		dir_lst = dir_lst->next;
 	}
 	return (0);

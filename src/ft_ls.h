@@ -30,7 +30,7 @@ extern int	g_flags;
 # define FLAG_NOSORT	0x40
 # define FLAG_ONEPERLN	0x80
 
-struct		s_entry
+struct				s_entry
 {
 	struct stat		*status;
 	struct passwd	*passwd;
@@ -41,49 +41,69 @@ struct		s_entry
 	char			*link_path;
 };
 
-int			parse_flags(int *argc, char ***argv);
-int			open_paths(int argc, char **argv, t_list **files, t_list **dirs);
+struct				s_widths
+{
+	unsigned int	links;
+	unsigned int	owner;
+	unsigned int	group;
+	unsigned int	blocks;
+	unsigned int	major;
+	unsigned int	minor;
+
+};
+
+int					parse_flags(int *argc, char ***argv);
+int					open_paths(int argc, char **argv,
+											t_list **files, t_list **dirs);
 
 /*
 ** ./entry_lst_sort.c
 */
 
-int			entry_lst_sort(t_list **dir_lst);
+int					entry_lst_sort(t_list **dir_lst);
+
+/*
+** ./find_widths.c
+*/
+
+struct s_widths		*find_widths(t_list *dir_lst);
 
 /*
 ** ./src/free.c
 */
 
-void		free_entry_mask(void *content);
-void		free_entry(struct s_entry *entry);
+void				free_entry_mask(void *content);
+void				free_entry(struct s_entry *entry);
 
 /*
 ** ./get_dir_info.c
 */
 
-int			build_entry_meta(struct s_entry *entry);
-t_list		*get_dir_info(char *path);
+int					build_entry_meta(struct s_entry *entry);
+t_list				*get_dir_info(char *path);
 
 /*
 ** ./ls_path.c
 */
 
-int			ls_dir(char *path);
+int					ls_dir(char *path);
 
 /*
 ** ./print_directory.c
 */
 
-int			print_entry_short(struct s_entry *entry);
-int			print_dir_short(t_list *dir_lst);
-int			print_directory(t_list *dir_lst);
-int			print_entry(struct s_entry *entry);
+int					print_entry_short(struct s_entry *entry);
+int					print_dir_short(t_list *dir_lst);
+int					print_directory(t_list *dir_lst);
+int					print_entry(struct s_entry *entry);
 
 /*
 ** ./print_long.c
 */
 
-int			print_entry_long(struct s_entry *entry);
-int			print_dir_long(t_list *dir_lst);
+int					print_entry_long(struct s_entry *entry);
+int					entry_long_wwidths(struct s_entry *entry,
+														struct s_widths widths);
+int					print_dir_long(t_list *dir_lst);
 
 #endif
