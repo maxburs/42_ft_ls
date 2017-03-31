@@ -107,35 +107,7 @@ static uintmax_t	get_blocks(t_list *dir_lst)
 	return (blocks);
 }
 
-
-int					print_entry_long(struct s_entry *entry)
-{
-	char			*f_time;
-
-	f_time = get_time(entry);
-	print_permissions(entry->status->st_mode);
-	ft_printf(" %ju %s %s",
-		(uintmax_t)(nlink_t)entry->status->st_nlink,
-		entry->passwd->pw_name,
-		entry->group->gr_name);
-	if (S_ISBLK(entry->status->st_mode) || S_ISCHR(entry->status->st_mode))
-	{
-		ft_printf(" %ju %ju", (uintmax_t)major(entry->status->st_rdev),
-								(uintmax_t)minor(entry->status->st_rdev));
-	}
-	else
-	{
-		ft_printf(" %ju", (uintmax_t)(off_t)entry->status->st_size);
-	}
-	ft_printf(" %s %s", f_time, entry->name);
-	if (entry->link_path)
-		ft_printf(" -> %s", entry->link_path);
-	ft_putchar('\n');
-	free(f_time);
-	return (0);
-}
-
-int					entry_long_wwidths(struct s_entry *entry,
+static int			entry_long_wwidths(struct s_entry *entry,
 														struct s_widths *widths)
 {
 	char			*f_time;
@@ -162,6 +134,74 @@ int					entry_long_wwidths(struct s_entry *entry,
 	return (0);
 }
 
+static char				*dir_from_path(char const *path)
+{
+	char const	*ptr;
+	char const	*last;
+
+	ptr = path;
+	last = NULL;
+	while ((ptr = ft_strchr(ptr, '/')) && ptr[1])
+	{
+		last = ptr;
+		ptr++;
+	}
+	if (last == NULL)
+		return (ft_strdup("."));
+	else
+		return (ft_strndup(path, last - path));
+}
+
+int					print_entry_long(struct s_entry *entry)
+{
+	t_list				*dir_lst;
+	struct s_widths		*widths;
+	char				*dir;
+
+	dir_lst = NULL;
+	if (NULL == (dir = dir_from_path(entry->path)))
+		return (-1);
+	ft_printf("getting with from dir: %s\n", dir);
+	if (NULL == (dir_lst = get_dir_info(dir)))
+	{
+		free(dir);
+		return (-1);
+	}
+	widths = find_widths(dir_lst);
+	lstdel(&dir_lst, &free_entry_mask);
+	entry_long_wwidths(entry, widths);
+	free(dir);
+	return (0);
+}
+
+/*
+int					print_entry_long(struct s_entry *entry)
+{
+	char			*f_time;
+
+	f_time = get_time(entry);
+	print_permissions(entry->status->st_mode);
+	ft_printf(" %ju %s %s",
+		(uintmax_t)(nlink_t)entry->status->st_nlink,
+		entry->passwd->pw_name,
+		entry->group->gr_name);
+	if (S_ISBLK(entry->status->st_mode) || S_ISCHR(entry->status->st_mode))
+	{
+		ft_printf(" %ju %ju", (uintmax_t)major(entry->status->st_rdev),
+								(uintmax_t)minor(entry->status->st_rdev));
+	}
+	else
+	{
+		ft_printf(" %ju", (uintmax_t)(off_t)entry->status->st_size);
+	}
+	ft_printf(" %s %s", f_time, entry->name);
+	if (entry->link_path)
+		ft_printf(" -> %s", entry->link_path);
+	ft_putchar('\n');
+	free(f_time);
+	return (0);
+}
+*/
 int					print_dir_long(t_list *dir_lst, _Bool print_total)
 {
 	struct s_widths		*widths;

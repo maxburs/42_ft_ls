@@ -108,8 +108,6 @@ int					print_entry(struct s_entry *entry);
 */
 
 int					print_entry_long(struct s_entry *entry);
-int					entry_long_wwidths(struct s_entry *entry,
-													struct s_widths *widths);
 int					print_dir_long(t_list *dir_lst, _Bool print_total);
 
 #endif
