@@ -23,7 +23,6 @@ int		g_flags;
 /*
 ** TODO: only stat() in first directory ??
 ** NOTE: test on /dev/
-** TODO: print full path for single file printing
 */
 
 static int		print_all_dirs(t_list *dir_lst)
@@ -76,6 +75,31 @@ static int		ls_args(int argc, t_list *files, t_list *dirs)
 	return (ret);
 }
 
+static void		sort_args(int argc, char **argv)
+{
+	char	*swap;
+	_Bool	sorted;
+	int		i;
+
+	sorted = false;
+	while (sorted == false)
+	{
+		sorted = true;
+		i = 0;
+		while (i + 1 < argc)
+		{
+			if (ft_strcmp(argv[i], argv[i + 1]) > 0)
+			{
+				sorted = false;
+				swap = argv[i + 1];
+				argv[i + 1] = argv[i];
+				argv[i] = swap; 
+			}
+			i++;
+		}
+	}
+}
+
 int				main(int argc, char **argv)
 {
 	t_list	*files;
@@ -95,6 +119,7 @@ int				main(int argc, char **argv)
 	}
 	if (g_flags & FLAG_NOSORT)
 		g_flags = g_flags | FLAG_ALL;
+	sort_args(argc, argv);
 	ret = open_paths(argc, argv, &files, &dirs);
 	entry_lst_sort(&files);
 	entry_lst_sort(&dirs);

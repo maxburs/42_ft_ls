@@ -43,14 +43,26 @@ static char				*name_from_path(char const *path)
 		return (ft_strdup(last + 1));
 }
 
-void					print_error(char const *path)
+void					print_error(char const *name)
 {
-	char	*name;
+	//char	*name;
 
-	name = name_from_path(path);
+	//name = name_from_path(path);
 	ft_putstr_fd("ls: ", STDERR_FILENO);
 	perror(name);
-	free(name);
+	//free(name);
+}
+
+static _Bool			treat_link_as_dir(struct s_entry *entry)
+{
+	struct stat		status;
+
+	ft_bzero(&status, sizeof(status));
+	if (false == S_ISLNK(entry->status->st_mode)
+		||  (g_flags & FLAG_LONG)
+		|| -1 == stat(entry->path, &status))
+		return (false);
+	return (S_ISDIR(status.st_mode));
 }
 
 static struct s_entry	*build_entry(char const *path)
@@ -63,21 +75,25 @@ static struct s_entry	*build_entry(char const *path)
 	}
 	ft_bzero(entry, sizeof(struct s_entry));
 	entry->path = ft_strdup(path);
-	if (NULL == (entry->name = name_from_path(path)))
-	{
-		free_entry(entry);
-		return (NULL);
-	}
 	if (-1 == build_entry_meta(entry))
 	{
 		free_entry(entry);
 		return (NULL);
 	}
-	if (entry->name[ft_strlen(entry->name) - 1] == '/'
-		|| entry->status->st_mode & S_IFDIR
-		|| (S_ISLNK(entry->status->st_mode) && !(g_flags & FLAG_LONG)))
+	if (path[ft_strlen(path) - 1] == '/'
+		|| /*entry->status->st_mode & S_IFDIR*/S_ISDIR(entry->status->st_mode)
+		|| treat_link_as_dir(entry))
 	{
 		entry->dir = true;
+	}
+	if (entry->dir == true)
+		entry->name = name_from_path(path);
+	else
+		entry->name = ft_strdup(path);
+	if (NULL == entry->name)
+	{
+		free_entry(entry);
+		return (NULL);
 	}
 	return (entry);
 }

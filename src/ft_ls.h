@@ -58,7 +58,7 @@ int					parse_flags(int *argc, char ***argv);
 ** ./open_paths.c
 */
 
-void				print_error(char const *path);
+void				print_error(char const *name);
 int					open_paths(int argc, char **argv,
 											t_list **files, t_list **dirs);
 

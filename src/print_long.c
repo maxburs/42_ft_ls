@@ -70,7 +70,7 @@ static void			print_permissions(mode_t mode)
 
 static _Bool		within_six_months(time_t time1, time_t time2)
 {
-	return (time1 < SIXMONTHS + time2 && time2 > SIXMONTHS + time1);
+	return (time1 < SIXMONTHS + time2 && time2 < SIXMONTHS + time1);
 }
 
 static char			*get_time(struct s_entry *entry)
@@ -87,7 +87,7 @@ static char			*get_time(struct s_entry *entry)
 	formatted_time = ft_strndup(raw_time + 4, 12);
 	if (formatted_time == NULL)
 		return (NULL);
-	if (within_six_months(entry->status->st_mtime, current_time))
+	if (false == within_six_months(entry->status->st_mtime, current_time))
 		ft_strncpy(formatted_time + 7, raw_time + 19, 5);
 	return (formatted_time);
 }

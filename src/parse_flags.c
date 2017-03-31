@@ -39,7 +39,10 @@ int				parse_flags(int *argc, char ***argv)
 	int		i;
 
 	i = 1;
-	while (i < *argc && (*argv)[i][0] == '-' && (*argv)[i][1] != '-')
+	while (i < *argc
+			&& (*argv)[i][0] == '-'
+			&& (*argv)[i][1] != '\0'
+			&& (*argv)[i][1] != '-')
 	{
 		if (parse_flags_string((*argv)[i] + 1))
 			return (-1);
