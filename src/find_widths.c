@@ -62,12 +62,14 @@ struct s_widths		*find_widths(t_list *dir_lst)
 	if (NULL == (widths = (struct s_widths*)malloc(sizeof(struct s_widths))))
 		return (NULL);
 	ft_bzero(widths, sizeof(struct s_widths));
+	widths->blocks = 1;
+	widths->links = 1;
 	while (dir_lst)
 	{
 		update_if_larger(widths, dir_lst->content);
 		dir_lst = dir_lst->next;
 	}
-	if (widths->major + widths->minor + 1 > widths->blocks)
-		widths->blocks = widths->major + widths->minor + 1;
+	if (widths->major > 0 && widths->major + widths->minor + 2 > widths->blocks)
+		widths->blocks = widths->major + widths->minor + 2;
 	return (widths);
 }

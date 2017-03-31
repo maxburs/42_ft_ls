@@ -43,6 +43,16 @@ static char				*name_from_path(char const *path)
 		return (ft_strdup(last + 1));
 }
 
+void					print_error(char const *path)
+{
+	char	*name;
+
+	name = name_from_path(path);
+	ft_putstr_fd("ls: ", STDERR_FILENO);
+	perror(name);
+	free(name);
+}
+
 static struct s_entry	*build_entry(char const *path)
 {
 	struct s_entry	*entry;
@@ -91,8 +101,7 @@ int				open_paths(int argc, char **argv, t_list **files, t_list **dirs)
 		}
 		else
 		{
-			ft_putstr_fd("ls: ", STDERR_FILENO);
-			perror(argv[i]);
+			print_error(argv[i]);
 			argv[i] = NULL;
 			error = 1;
 		}

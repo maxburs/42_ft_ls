@@ -23,8 +23,7 @@ int		g_flags;
 /*
 ** TODO: only stat() in first directory ??
 ** NOTE: test on /dev/
-** TODO: change date format when date is farther than 6 months away
-** BUG: ls *: missing newline: just fixed, is it working??
+** TODO: print full path for single file printing
 */
 
 static int		print_all_dirs(t_list *dir_lst)
@@ -68,7 +67,7 @@ static int		ls_args(int argc, t_list *files, t_list *dirs)
 	else
 	{
 		if (files)
-			ret = print_directory(files);
+			ret = print_directory(files, false);
 		if (files && dirs)
 			ft_putchar('\n');
 		if (dirs)
@@ -87,8 +86,8 @@ int				main(int argc, char **argv)
 	dirs = NULL;
 	ret = 0;
 	g_flags = 0;
-	if (parse_flags(&argc, &argv))
-		return (0);
+	if (parse_flags(&argc, &argv) == -1)
+		return (1);
 	if (argc > 0 && ft_strcmp(argv[0], "--") == 0)
 	{
 		argc--;

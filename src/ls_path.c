@@ -53,12 +53,11 @@ int				ls_dir(char *path)
 
 	if ((dir_lst = get_dir_info(path)) == NULL && errno)
 	{
-		ft_putstr_fd("ls: ", STDERR_FILENO);
-		perror(path);
+		print_error(path);
 		return (1);
 	}
 	if (entry_lst_sort(&dir_lst)
-		|| print_directory(dir_lst)
+		|| print_directory(dir_lst, true)
 		|| ((g_flags & FLAG_RECURSIVE) && recurse_directories(dir_lst)))
 	{
 		lstdel(&dir_lst, &free_entry_mask);

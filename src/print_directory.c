@@ -39,7 +39,7 @@ int				print_dir_short(t_list *dir_lst)
 		ft_putstr(((struct s_entry*)dir_lst->content)->name);
 		dir_lst = dir_lst->next;
 		if (dir_lst)
-			g_flags & FLAG_ONEPERLN ? ft_putchar('\n') : ft_putstr("   ");
+			g_flags & FLAG_ONEPERLN ? ft_putchar('\n') : ft_putstr("\n");
 		else
 			break ;
 	}
@@ -47,11 +47,11 @@ int				print_dir_short(t_list *dir_lst)
 	return (0);
 }
 
-int				print_directory(t_list *dir_lst)
+int				print_directory(t_list *dir_lst, _Bool print_total)
 {
 	if (g_flags & FLAG_LONG)
 	{
-		if (print_dir_long(dir_lst))
+		if (print_dir_long(dir_lst, print_total))
 			return (-1);
 	}
 	else

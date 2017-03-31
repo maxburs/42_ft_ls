@@ -53,6 +53,12 @@ struct				s_widths
 };
 
 int					parse_flags(int *argc, char ***argv);
+
+/*
+** ./open_paths.c
+*/
+
+void				print_error(char const *path);
 int					open_paths(int argc, char **argv,
 											t_list **files, t_list **dirs);
 
@@ -94,7 +100,7 @@ int					ls_dir(char *path);
 
 int					print_entry_short(struct s_entry *entry);
 int					print_dir_short(t_list *dir_lst);
-int					print_directory(t_list *dir_lst);
+int					print_directory(t_list *dir_lst, _Bool print_total);
 int					print_entry(struct s_entry *entry);
 
 /*
@@ -103,7 +109,7 @@ int					print_entry(struct s_entry *entry);
 
 int					print_entry_long(struct s_entry *entry);
 int					entry_long_wwidths(struct s_entry *entry,
-														struct s_widths widths);
-int					print_dir_long(t_list *dir_lst);
+													struct s_widths *widths);
+int					print_dir_long(t_list *dir_lst, _Bool print_total);
 
 #endif
