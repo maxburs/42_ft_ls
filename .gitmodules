@@ -1,3 +1,0 @@
-[submodule "src/ft_printf"]
-	path = src/ft_printf
-	url = https://github.com/maxwellburson/42_ft_printf.git
