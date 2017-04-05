@@ -17,10 +17,11 @@ LIBFTPRINTF_DIR = ./src/ft_printf
 
 SRC = \
 	$(addprefix ./src/, \
+		arg_to_entry.c \
 		free.c \
 		ft_ls.c \
+		helper.c \
 		ls_dir.c \
-		arg_to_entry.c \
 		parse_flags.c \
 		$(addprefix entry/, \
 			entry_find_widths.c \

@@ -49,7 +49,7 @@ static _Bool			should_treat_link_as_dir(struct s_entry *entry)
 
 	ft_bzero(&status, sizeof(status));
 	if (false == S_ISLNK(entry->status->st_mode)
-		||  (g_flags & FLAG_LONG)
+		|| (g_flags & FLAG_LONG)
 		|| -1 == stat(entry->path, &status))
 		return (false);
 	return (S_ISDIR(status.st_mode));
@@ -60,35 +60,29 @@ static struct s_entry	*build_entry(char const *path)
 	struct s_entry	*entry;
 
 	if (NULL == (entry = (struct s_entry*)malloc(sizeof(struct s_entry))))
-	{
 		return (NULL);
-	}
 	ft_bzero(entry, sizeof(struct s_entry));
-	entry->path = ft_strdup(path);
+	if (NULL == (entry->path = ft_strdup(path)))
+		return (NULL);
 	if (-1 == entry_get_meta(entry))
 	{
 		free_entry(entry);
 		return (NULL);
 	}
-	if (path[ft_strlen(path) - 1] == '/'
-		|| S_ISDIR(entry->status->st_mode)
+	if (path[ft_strlen(path) - 1] == '/' || S_ISDIR(entry->status->st_mode)
 		|| should_treat_link_as_dir(entry))
 	{
 		entry->dir = true;
-	}
-	if (entry->dir == true)
 		entry->name = name_from_path(path);
+	}
 	else
 		entry->name = ft_strdup(path);
 	if (NULL == entry->name)
-	{
-		free_entry(entry);
-		return (NULL);
-	}
+		del_entry(&entry);
 	return (entry);
 }
 
-int				arg_to_entry(int argc, char **argv,
+int						arg_to_entry(int argc, char **argv,
 											t_list **files, t_list **dirs)
 {
 	int				i;

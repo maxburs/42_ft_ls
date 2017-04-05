@@ -20,7 +20,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-static _Bool		should_recurse(struct s_entry *entry)
+static _Bool			should_recurse(struct s_entry *entry)
 {
 	return (S_ISDIR(entry->status->st_mode)
 			&& !(entry->name[0] == '.' && !(g_flags & FLAG_ALL))
@@ -28,7 +28,7 @@ static _Bool		should_recurse(struct s_entry *entry)
 			&& (ft_strcmp(entry->name, "..") != 0));
 }
 
-static int			recurse_directories(t_list *dir_lst)
+static int				recurse_directories(t_list *dir_lst)
 {
 	struct s_entry	*entry;
 
@@ -39,29 +39,12 @@ static int			recurse_directories(t_list *dir_lst)
 		entry = dir_lst->content;
 		if (should_recurse(dir_lst->content))
 		{
-				ft_putchar('\n');
-			ft_printf("%s:\n", ((struct s_entry*)(dir_lst->content))->path);
+			ft_printf("\n%s:\n", ((struct s_entry*)(dir_lst->content))->path);
 			ls_dir(entry->path);
 		}
 		dir_lst = dir_lst->next;
 	}
 	return (0);
-}
-
-static char				*directory_append(char *dir_path, char *name)
-{
-	size_t	l;
-	char	*path;
-	char	*ptr;
-
-	l = ft_strlen(dir_path) + ft_strlen(name) + 1;
-	if (!(path = (char*)malloc(sizeof(char) * (l + 1))))
-		return (NULL);
-	path[l] = '\0';
-	ptr = ft_strplace(path, dir_path);
-	ptr[1] = '/';
-	ft_strplace(ptr + 2, name);
-	return (path);
 }
 
 static struct s_entry	*build_entry(struct dirent *dirent, char *dir_path)
@@ -80,14 +63,11 @@ static struct s_entry	*build_entry(struct dirent *dirent, char *dir_path)
 	}
 	entry->name = ft_strdup(dirent->d_name);
 	if (-1 == entry_get_meta(entry))
-	{
-		free_entry(entry);
-		return (NULL);
-	}
+		del_entry(&entry);
 	return (entry);
 }
 
-static t_list		*get_dir_info(char *path)
+static t_list			*get_dir_info(char *path)
 {
 	DIR				*dirp;
 	struct dirent	*dir_cur;
@@ -115,7 +95,7 @@ static t_list		*get_dir_info(char *path)
 	return (dir_lst);
 }
 
-int				ls_dir(char *path)
+int						ls_dir(char *path)
 {
 	t_list	*dir_lst;
 

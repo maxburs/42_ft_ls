@@ -53,9 +53,7 @@ static int		ls_args(int argc, t_list *files, t_list *dirs)
 
 	ret = 0;
 	if (argc == 0)
-	{
 		ret = ls_dir(".") || ret;
-	}
 	else if (argc == 1)
 	{
 		if (files)
@@ -95,7 +93,7 @@ static void		sort_args(int argc, char **argv)
 				sorted = false;
 				swap = argv[i + 1];
 				argv[i + 1] = argv[i];
-				argv[i] = swap; 
+				argv[i] = swap;
 			}
 			i++;
 		}

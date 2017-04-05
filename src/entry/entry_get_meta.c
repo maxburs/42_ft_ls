@@ -28,7 +28,6 @@
 
 #define BUFF_SIZE 128
 
-
 static int				get_passwd(struct s_entry *entry)
 {
 	struct passwd		*passwd;
@@ -76,7 +75,7 @@ static int				get_group(struct s_entry *entry)
 ** fills in entry->status, entry->passwd, entry->group, and entry->link_path
 */
 
-int					entry_get_meta(struct s_entry *entry)
+int						entry_get_meta(struct s_entry *entry)
 {
 	char			buff[BUFF_SIZE];
 	int				ret;

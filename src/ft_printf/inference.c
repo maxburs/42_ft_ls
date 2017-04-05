@@ -49,8 +49,12 @@ static void		inference_dou(t_conv *conv)
 ** inference handles shortcuts like D or O conversion characters
 */
 
-void			inference(t_conv *conv)
+void			inference(t_conv *conv, va_list *ap)
 {
+	if (conv->flags & VAR_WIDTH_FLAG)
+		conv->min_width = (unsigned int)va_arg(*ap, unsigned int);
+	if (conv->flags & VAR_PRECISION_FLAG)
+		conv->precision = (unsigned int)va_arg(*ap, unsigned int);
 	if (conv->letter == 'b')
 		inference_b(conv);
 	else if (conv->letter == 's' && (conv->flags & HASH_FLAG))

@@ -58,54 +58,50 @@ void				print_error(char const *name);
 /*
 ** ./arg_to_entry.c
 */
-
 int					arg_to_entry(int argc, char **argv,
 											t_list **files, t_list **dirs);
 
 /*
 ** ./entry_lst_sort.c
 */
-
 int					entry_lst_sort(t_list **dir_lst);
 
 /*
 ** ./entry_find_widths.c
 */
-
 struct s_widths		*entry_find_widths(t_list *dir_lst);
 
 /*
 ** ./src/free.c
 */
-
 void				free_entry_mask(void *content);
 void				free_entry(struct s_entry *entry);
+void				del_entry(struct s_entry **entry);
 
 /*
 ** ./get_dir_info.c
 */
-
 int					entry_get_meta(struct s_entry *entry);
 
 /*
-** ./ls_path.c
+** ./helper.c
 */
+char				*directory_append(char *dir_path, char *name);
 
+/*
+** ./ls_dir.c
+*/
 int					ls_dir(char *path);
-
-
 
 /*
 ** ./print/
 */
-
 int					entry_long_wwidths(struct s_entry *entry,
 												struct s_widths *widths);
 
 /*
 ** ./print/print_directory.c
 */
-
 int					print_entry_short(struct s_entry *entry);
 int					print_dir_short(t_list *dir_lst);
 int					print_directory(t_list *dir_lst, _Bool print_total);
@@ -114,7 +110,6 @@ int					print_entry(struct s_entry *entry);
 /*
 ** ./print/print_long.c
 */
-
 int					print_entry_long(struct s_entry *entry);
 int					print_dir_long(t_list *dir_lst, _Bool print_total);
 

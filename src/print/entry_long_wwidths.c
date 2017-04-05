@@ -66,7 +66,7 @@ static void			print_permissions(mode_t mode)
 		ft_putchar(mode & S_IXOTH ? 'x' : '-');
 }
 
-#define SIXMONTHS ((365/2) * 86400)  
+#define SIXMONTHS ((365/2) * 86400)
 
 static _Bool		within_six_months(time_t time1, time_t time2)
 {
@@ -92,7 +92,8 @@ static char			*get_time(struct s_entry *entry)
 	return (formatted_time);
 }
 
-int			entry_long_wwidths(struct s_entry *entry, struct s_widths *widths)
+int					entry_long_wwidths(struct s_entry *entry,
+													struct s_widths *widths)
 {
 	char			*f_time;
 

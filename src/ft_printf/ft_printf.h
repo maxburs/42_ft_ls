@@ -55,8 +55,9 @@ int				ft_printf(const char *format, ...);
 
 /*
 ** inference.c
+** evaluates anything in the conv that can be evaluated (S=ls, *, ...)
 */
-void			inference(t_conv *conv);
+void			inference(t_conv *conv, va_list *ap);
 
 /*
 ** conv.c

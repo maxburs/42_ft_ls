@@ -23,7 +23,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-
 int				print_entry_short(struct s_entry *entry)
 {
 	ft_printf("%s\n", entry->name);
